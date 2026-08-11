@@ -109,7 +109,9 @@ blocos = [
     ("T", "E) William - 10 modulos Maxeon 535 W = 5,35 kWp + Solis 4 kW  ->  R$ 18.848,91 INSTALADO (kit 11.158,91 + eng. 790 + instal. 6.900)"),
     ("T", "F) Sun Coast (Alexandre) - 8 modulos RONMA 585 W = 4,68 kWp + AUXSOL 3 kW 1 MPPT  ->  R$ 12.387,64 INSTALADO"),
     ("T", "     Proposta 40436 de 11/08/2026, valida ate 20/08/2026. CNPJ 47.864.839/0001-31. Unica com garantias declaradas."),
-    ("T", "G) Bruno G4 (11) 96861-7830 - nada recebido ainda. Coluna reservada na aba COMPARATIVO."),
+    ("T", "G) SunWash (Yuri) - 10 modulos de 650 W = 6,50 kWp + 4 MICROINVERSORES de 2,25 kW  ->  R$ 16.780,54 INSTALADO"),
+    ("T", "     Unica com 18x SEM JUROS pelo mesmo valor a vista (R$ 932,25/mes). Unica com 1 MPPT por modulo."),
+    ("T", "H) Bruno G4 (11) 96861-7830 - nada recebido ainda. Coluna reservada na aba COMPARATIVO."),
     ("", ""),
     ("SUB", "2. AS TRES DESCOBERTAS MAIS IMPORTANTES"),
     ("R", "(1) SEU PADRAO E MONOFASICO, E TODOS OS INVERSORES COTADOS SAO DE 220 V."),
@@ -709,41 +711,49 @@ OPT = [
          qty=12, wp=615, mod="JA Solar bifacial N-type", inv="Huawei 6 kW mono 220V 2 MPPT", ac=6.0,
          mppt="2", volt="220 V (2 fases)", telha="Fibrocimento", gmod="nao informada", ginv="nao informada",
          gserv="nao informada", excl="nao informadas", price=18228.70, extra=0, homol=790,
-         instal="=6900/10*{c}9", promise=10554, mat=True),
+         instal="=6900/10*{c}9", promise=10554, mat=True, pag="PIX (cotacao de material)"),
     dict(L="B) TecSolarSP\nAstronergy 605W\nHuawei 6 kW", vend="TecSolarSP (11) 97365-9192",
          cnpj="29.775.600/0001-03", doc="Cotacao Belenergy WEB-006512519", tipo="MATERIAL apenas",
          qty=12, wp=605, mod="Astronergy bifacial N-type", inv="Huawei 6 kW mono 220V 2 MPPT", ac=6.0,
          mppt="2", volt="220 V (2 fases)", telha="Fibrocimento", gmod="nao informada", ginv="nao informada",
          gserv="nao informada", excl="nao informadas", price=17307.90, extra=0, homol=790,
-         instal="=6900/10*{c}9", promise=0, mat=True),
+         instal="=6900/10*{c}9", promise=0, mat=True, pag="PIX (cotacao de material)"),
     dict(L="C) SunWash\nTCL 620W\nAUXSOL 5 kW", vend="SunWash - Yuri (16) 99353-4346",
          cnpj="NAO INFORMADO", doc="WhatsApp 10/08/2026", tipo="INSTALADO (turnkey)",
          qty=10, wp=620, mod="TCL 620 W (tecnologia a confirmar)", inv="AUXSOL 5 kW (modelo nao informado)",
          ac=5.0, mppt="a confirmar", volt="220 V (a confirmar)", telha="nao informada", gmod="nao informada",
          ginv="nao informada", gserv="nao informada", excl="nao informadas", price=14220.34, extra=1800,
-         homol=0, instal=0, promise=8400, mat=False),
+         homol=0, instal=0, promise=8400, mat=False, pag="a vista ou 21x COM juros"),
     dict(L="D) SunWash\nTCL 620W\nHUAWEI 5 kW", vend="SunWash - Yuri (16) 99353-4346",
          cnpj="NAO INFORMADO", doc="WhatsApp 10/08/2026", tipo="INSTALADO (turnkey)",
          qty=10, wp=620, mod="TCL 620 W (tecnologia a confirmar)", inv="HUAWEI 5 kW (modelo nao informado)",
          ac=5.0, mppt="a confirmar", volt="220 V (a confirmar)", telha="nao informada", gmod="nao informada",
          ginv="nao informada", gserv="nao informada", excl="nao informadas", price=15220.34, extra=1800,
-         homol=0, instal=0, promise=8400, mat=False),
+         homol=0, instal=0, promise=8400, mat=False, pag="a vista ou 21x COM juros"),
     dict(L="E) William\nMaxeon 535W\nSolis 4 kW", vend="William (11) 99636-5333",
          cnpj="NAO INFORMADO", doc="Proposta tecnica de 7 paginas", tipo="INSTALADO (turnkey)",
          qty=10, wp=535, mod="Maxeon bifacial PERC", inv="Solis 4 kW mono 220V 2 MPPT", ac=4.0,
          mppt="2", volt="220 V (2 fases)", telha="Colonial", gmod="nao informada", ginv="nao informada",
          gserv="nao informada", excl="nao informadas", price=11158.91, extra=0, homol=790, instal=6900,
-         promise=6151, mat=True),
+         promise=6151, mat=True, pag="PIX no kit; restante nao informado"),
     dict(L="F) Sun Coast\nRONMA 585W\nAUXSOL 3 kW", vend="Sun Coast - Alexandre (11) 91544-8947",
          cnpj="47.864.839/0001-31", doc="Proposta 40436 de 11/08/2026 (val. 20/08)", tipo="INSTALADO (turnkey)",
          qty=8, wp=585, mod="RONMA SOLAR bifacial N-type 144 cel", inv="AUXSOL 3 kW mono 220V 1 MPPT",
          ac=3.0, mppt="1", volt="220 V (2 fases)", telha="Colonial",
          gmod="25 anos eficiencia / 15 anos defeito", ginv="10 a 25 anos", gserv="12 meses",
          excl="padrao de entrada, obras civis, telhado, eletrodutos, ART estrutural",
-         price=12387.64, extra=0, homol=0, instal=0, promise=6367.50, mat=False),
-    dict(L="G) Bruno G4\n(a receber)", vend="Bruno G4 (11) 96861-7830", cnpj="", doc="Nada recebido",
+         price=12387.64, extra=0, homol=0, instal=0, promise=6367.50, mat=False,
+         pag="a vista, cartao 12x/21x COM juros ou financiamento 36x"),
+    dict(L="G) SunWash\nMICRO 10x650W\n4x 2,25 kW", vend="SunWash - Yuri (16) 99353-4346",
+         cnpj="NAO INFORMADO", doc="WhatsApp 10/08/2026 17:45", tipo="INSTALADO (turnkey)",
+         qty=10, wp=650, mod="Nao informado (650 W)", inv="4x MICROINVERSOR 2,25 kW = 9,0 kW AC",
+         ac=9.0, mppt="1 por modulo (10 MPPTs)", volt="220 V (a confirmar)", telha="nao informada",
+         gmod="nao informada", ginv="nao informada", gserv="nao informada", excl="nao informadas",
+         price=16780.54, extra=1800, homol=0, instal=0, promise=8400, mat=False,
+         pag="18x de R$ 932,25 SEM JUROS (= preco a vista)"),
+    dict(L="H) Bruno G4\n(a receber)", vend="Bruno G4 (11) 96861-7830", cnpj="", doc="Nada recebido",
          tipo="?", qty="", wp="", mod="", inv="", ac="", mppt="", volt="", telha="", gmod="", ginv="",
-         gserv="", excl="", price="", extra="", homol="", instal="", promise="", mat=False),
+         gserv="", excl="", price="", extra="", homol="", instal="", promise="", mat=False, pag=""),
 ]
 NOPT = len(OPT)
 CL = [get_column_letter(3 + i) for i in range(NOPT)]   # C..I
@@ -817,9 +827,9 @@ crow(13, "Inversor", [o["inv"] for o in OPT], textrow=True,
 crow(14, "Potencia AC do inversor (kW)", [o["ac"] for o in OPT], NUM2, inputs=True,
      note="Exigir o codigo exato do modelo e a confirmacao de que e 220 V.")
 crow(15, "Numero de MPPTs", [o["mppt"] for o in OPT], textrow=True,
-     note="ALERTA: a Sun Coast usa inversor de 1 MPPT UNICO. Todos os 8 modulos ficam numa unica string: exige mesma orientacao e inclinacao, e sombra em um modulo derruba a string inteira.")
+     note="ALERTA: Sun Coast usa 1 MPPT UNICO - os 8 modulos numa string so, exigindo mesma agua e mesma inclinacao, e sombra em 1 modulo derruba tudo. NO OUTRO EXTREMO, a opcao G com microinversor da 1 MPPT POR MODULO: sombra em um modulo nao afeta os outros e da liberdade de usar mais de uma agua do telhado.")
 crow(16, "RELACAO DC/AC", F_("=IFERROR({c}12/{c}14,0)"), '0.00"x"', bold=True,
-     note="ALERTA: faixa saudavel de 1,10 a 1,35. Sun Coast fica em 1,56 - acima do limite, com corte de potencia (clipping) nas melhores horas e risco de perder a garantia do inversor. William em 1,34, no limite.")
+     note="ALERTA: faixa saudavel de 1,10 a 1,35. Sun Coast em 1,56 = acima do limite, com clipping e risco de perder a garantia. William em 1,34, no limite. Opcao G em 0,72 = o oposto: 4 microinversores de 2,25 kW dao 9 kW AC para so 6,5 kWp. PERGUNTAR ao Yuri quantos modulos cada micro aceita - se sao 4, existem 6 canais livres para expansao futura; se nao, voce esta pagando por um micro a mais.")
 crow(17, "Tensao de operacao", [o["volt"] for o in OPT], textrow=True, fill=BAD_F,
      note="ALERTA MAIOR: sua ligacao e MONOFASICA (127 V na Enel SP). TODOS exigem mudanca para bifasico.")
 crow(18, "Tipo de telha que o orcamento considerou", [o["telha"] for o in OPT], textrow=True,
@@ -834,6 +844,9 @@ crow(22, "Garantia declarada do servico", [o["gserv"] for o in OPT], textrow=Tru
      note="12 meses de servico e o minimo de mercado.")
 crow(23, "Exclusoes declaradas na proposta", [o["excl"] for o in OPT], textrow=True,
      note="ALERTA: a Sun Coast exclui EXPLICITAMENTE a adequacao do padrao de entrada, obras no telhado, eletrodutos e o ART estrutural. E honesto ao declarar, mas o custo e seu. Os outros nao declararam exclusoes - o que nao significa que estejam inclusas.")
+
+crow(24, "Condicao de pagamento declarada", [o["pag"] for o in OPT], textrow=True,
+     note="ATENCAO: 18x SEM JUROS pelo mesmo valor a vista e uma vantagem financeira REAL - equivale a um desconto, porque o dinheiro fica rendendo na sua mao. Todas as outras oferecem parcelamento COM juros.")
 
 sec(25, "PRECOS")
 crow(26, "Preco BASE informado (R$)", [o["price"] for o in OPT], MONEY, inputs=True,
@@ -887,10 +900,15 @@ crow(55, "Economia liquida ano 1 (R$/ano)", F_("=ECONOMIA!{c}26"), MONEY)
 crow(56, "Economia liquida ano 1 (R$/mes)", F_("={c}55/12"), MONEY, bold=True)
 crow(57, "PAYBACK SIMPLES (anos)", F_("=IFERROR({c}31/{c}55,0)"), NUM2, bold=True, fill=OK_F,
      note="Investimento total dividido pela economia do ano 1. CUIDADO: payback bom nao significa melhor negocio - ver linha 61.")
-PRJ = ["E", "H", "K", "N", "Q", "T"]
-crow(58, "Economia acumulada em 5 anos (R$)", [f"=PROJECAO!{PRJ[i]}10" if i < len(PRJ) else "" for i in range(NOPT)], MONEY0)
-crow(59, "Economia acumulada em 10 anos (R$)", [f"=PROJECAO!{PRJ[i]}15" if i < len(PRJ) else "" for i in range(NOPT)], MONEY0)
-crow(60, "Economia acumulada em 20 anos (R$)", [f"=PROJECAO!{PRJ[i]}25" if i < len(PRJ) else "" for i in range(NOPT)], MONEY0)
+PRJ, _k = [], 0
+for _o in OPT:
+    if _o["qty"] != "":
+        PRJ.append(get_column_letter(5 + 3 * _k)); _k += 1
+    else:
+        PRJ.append(None)
+crow(58, "Economia acumulada em 5 anos (R$)", [f"=PROJECAO!{c}10" if c else "" for c in PRJ], MONEY0)
+crow(59, "Economia acumulada em 10 anos (R$)", [f"=PROJECAO!{c}15" if c else "" for c in PRJ], MONEY0)
+crow(60, "Economia acumulada em 20 anos (R$)", [f"=PROJECAO!{c}25" if c else "" for c in PRJ], MONEY0)
 crow(61, "LUCRO LIQUIDO EM 20 ANOS (R$)", F_("={c}60-{c}31"), MONEY0, bold=True, fill=OK_F,
      note="Economia de 20 anos menos o investimento. E O MELHOR CRITERIO DE DECISAO FINANCEIRA - melhor que o payback.")
 crow(62, "Retorno sobre o investimento em 20 anos", F_("=IFERROR({c}61/{c}31,0)"), PCT)
@@ -898,10 +916,10 @@ crow(62, "Retorno sobre o investimento em 20 anos", F_("=IFERROR({c}61/{c}31,0)"
 sec(64, "EXPANSAO FUTURA")
 crow(65, "kWp maximo com o mesmo inversor (DC/AC 1,35)", F_("={c}14*1.35"), NUM2)
 crow(66, "Modulos que ainda cabem no inversor", F_("=MAX(0,ROUNDDOWN(({c}65-{c}12)*1000/{c}10,0))"), NUM0, bold=True,
-     note="ALERTA: Solis 4 kW e AUXSOL 5 kW e 3 kW nao aceitam nenhum modulo a mais. So as opcoes A e B tem folga - e minima.")
+     note="ALERTA: Solis 4 kW e os AUXSOL de 5 e 3 kW nao aceitam nenhum modulo a mais. A e B tem folga minima (1 modulo). A opcao G com microinversores e a unica com folga real - mas o limite verdadeiro e o numero de CANAIS livres nos micros, nao a potencia. CONFIRMAR com o Yuri.")
 crow(67, "Geracao extra possivel sem trocar inversor (kWh/ano)", F_("={c}66*{c}10/1000*GERACAO!$I$17"), NUM0)
 crow(68, "Situacao do inversor", F_('=IF({c}16>1.35,"JA SOBRECARREGADO",IF({c}16<1.1,"SUBAPROVEITADO","OK"))'), None, bold=True,
-     note="'JA SOBRECARREGADO' significa que o inversor esta pequeno para os modulos desde o primeiro dia.")
+     note="'JA SOBRECARREGADO' = inversor pequeno para os modulos desde o dia 1 (perde geracao e garantia). 'SUBAPROVEITADO' = voce pagou por potencia de inversor que nao vai usar - aceitavel se for folga proposital para expansao, ruim se for so venda a mais.")
 
 ws.cell(row=70, column=2, value="DECISAO ESPECIFICA: AUXSOL x HUAWEI NA PROPOSTA DA SUNWASH").font = SUB
 for c in range(2, NOTECOL + 1):
@@ -1240,6 +1258,15 @@ chk = [
     ("R", "ESTRUTURA NAO VALIDADA na cotacao Astronergy: a propria BelEnergy escreveu que 'as estruturas deste orcamento nao foram recomendadas'."),
     ("R", "PROPOSTA SEM CNPJ. A proposta do William nao traz razao social nem CNPJ. Sem isso nao existe garantia exigivel. Pedir o documento com identificacao da empresa."),
     ("R", "'INVERSOR HIBRIDO' NAO COMPROVADO. A peca publicitaria da TecSolarSP anuncia inversor HIBRIDO 6 kW, mas a cotacao traz 'INVHW-MO-220V-6KW'. Exigir o codigo completo do modelo e a confirmacao por escrito de que aceita bateria - hibrido e nao hibrido tem preco e funcao diferentes."),
+    ("A", "1-bis) PERGUNTAS ESPECIFICAS DA PROPOSTA COM MICROINVERSORES (opcao G)"),
+    ("R", "QUAL A MARCA E O MODELO DOS 4 MICROINVERSORES? Deye, Hoymiles, APsystems e Sungrow tem rede no Brasil. Marca desconhecida em microinversor e pior que em inversor string, porque sao 4 equipamentos DEBAIXO dos modulos: trocar um exige desmontar placa."),
+    ("R", "QUAL A MARCA DO MODULO DE 650 W? O orcamento nao informa. 650 W e formato grande (cerca de 2,6 m2 por placa): confirmar que cabe na agua Sudeste e que o peso por m2 e compativel com o telhado."),
+    ("R", "QUANTOS MODULOS CADA MICROINVERSOR ACEITA? 4 micros de 2,25 kW dao 9 kW AC para 6,5 kWp de modulos (relacao 0,72). Se cada micro aceita 4 modulos, sao 16 canais para 10 modulos = 6 canais livres, o que e uma excelente folga de expansao. Se aceita menos, voce esta pagando por um micro desnecessario. Essa unica resposta muda a avaliacao da proposta."),
+    ("R", "CONFIRMAR QUE O PARCELAMENTO EM 18x E REALMENTE SEM JUROS pelo valor a vista (18 x 932,25 = 16.780,54 confere). Pedir por escrito, e confirmar se o preco a vista nao teria desconto adicional."),
+    ("R", "MICROINVERSOR EXIGE MANUTENCAO NO TELHADO. Perguntar como e feito o acesso, o prazo de troca em garantia e se o monitoramento e por modulo (deveria ser)."),
+    ("T", "Vantagens tecnicas reais do microinversor no SEU caso: sombreamento nunca foi avaliado e o micro isola o problema por modulo; permite dividir os modulos em mais de uma agua do telhado (poderia recuperar parte dos 11% perdidos pela orientacao Sudeste); nao ha tensao alta de corrente continua no telhado; falha de um equipamento nao para o sistema todo."),
+    ("", ""),
+    ("A", "1-ter) DEMAIS BLOQUEADORES"),
     ("R", "SUN COAST: INVERSOR DE 3 kW PARA 4,68 kWp = RELACAO DC/AC DE 1,56. A faixa saudavel e 1,10 a 1,35. Nessa configuracao o inversor corta potencia (clipping) nas melhores horas do dia e a maioria dos fabricantes considera fora da garantia. Exigir do Alexandre o limite de sobrecarga do modelo AUXSOL cotado, por escrito, e a versao com inversor de 4 ou 5 kW."),
     ("R", "SUN COAST: INVERSOR COM 1 MPPT UNICO. Os 8 modulos ficam numa unica string. Isso exige que todos estejam na MESMA agua, com mesma orientacao e inclinacao, e faz com que sombra em um unico modulo derrube a producao da string inteira. Se o telhado tiver mais de uma agua util, essa configuracao nao serve."),
     ("R", "SUN COAST EXCLUI POR ESCRITO a adequacao do padrao de entrada, obras no telhado, eletrodutos e eletrocalhas, e o projeto estrutural com ART. E honesto declarar, mas o custo e seu: sao os R$ 2.500 (estimados) do padrao mais o que aparecer no telhado. Somar isso ao preco antes de comparar."),
