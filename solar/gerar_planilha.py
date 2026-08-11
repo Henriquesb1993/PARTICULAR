@@ -107,7 +107,9 @@ blocos = [
     ("T", "     (a SunWash tambem anunciou kits Intelbras de 'ate 500 / 700 / 1000 kWh/mes' por R$ 12.459,81 / 16.190,48 / 20.777,81"),
     ("T", "      + R$ 1.800 de acrescimo regional. Sem quantidade nem potencia de modulo informadas - descartados da comparacao.)"),
     ("T", "E) William - 10 modulos Maxeon 535 W = 5,35 kWp + Solis 4 kW  ->  R$ 18.848,91 INSTALADO (kit 11.158,91 + eng. 790 + instal. 6.900)"),
-    ("T", "F) Bruno G4 (11) 96861-7830 - nada recebido ainda. Coluna reservada na aba COMPARATIVO."),
+    ("T", "F) Sun Coast (Alexandre) - 8 modulos RONMA 585 W = 4,68 kWp + AUXSOL 3 kW 1 MPPT  ->  R$ 12.387,64 INSTALADO"),
+    ("T", "     Proposta 40436 de 11/08/2026, valida ate 20/08/2026. CNPJ 47.864.839/0001-31. Unica com garantias declaradas."),
+    ("T", "G) Bruno G4 (11) 96861-7830 - nada recebido ainda. Coluna reservada na aba COMPARATIVO."),
     ("", ""),
     ("SUB", "2. AS TRES DESCOBERTAS MAIS IMPORTANTES"),
     ("R", "(1) SEU PADRAO E MONOFASICO, E TODOS OS INVERSORES COTADOS SAO DE 220 V."),
@@ -122,7 +124,14 @@ blocos = [
     ("R", "(3) NENHUM DOS QUATRO CONSIDEROU O CARREGAMENTO DO BYD."),
     ("T", "     Todos dimensionaram pela conta antiga (media de 381 kWh/mes). Com o carro o consumo vai para a faixa de"),
     ("T", "     580 a 680 kWh/mes. A proposta do William (5,35 kWp) fica subdimensionada e o inversor Solis de 4 kW nao"),
-    ("T", "     permite ampliar depois. As de 6,20 e 7,38 kWp por coincidencia ficam adequadas."),
+    ("T", "     permite ampliar depois. A Sun Coast (4,68 kWp) e a menor de todas e cobre so 73% do consumo com o carro."),
+    ("T", "     As de 6,20 e 7,38 kWp por coincidencia ficam adequadas."),
+    ("", ""),
+    ("SUB", "2c. CUIDADO COM O PAYBACK COMO CRITERIO UNICO"),
+    ("T", "Sistema pequeno se paga rapido e depois te deixa pagando conta de luz para sempre. O payback ignora a energia que"),
+    ("T", "voce NAO compensou. Use a linha 61 do COMPARATIVO (LUCRO LIQUIDO EM 20 ANOS) para decidir, nao a linha 57 (payback)."),
+    ("T", "Exemplo real deste caso: Sun Coast e SunWash tem payback quase igual, mas a SunWash rende cerca de R$ 48 mil MAIS"),
+    ("T", "em 20 anos, porque o sistema e 32% maior e cobre o carro."),
     ("", ""),
     ("SUB", "2b. DIFERENCA DE PRECO ENTRE OS FORNECEDORES - O DADO MAIS IMPORTANTE PARA NEGOCIAR"),
     ("T", "SunWash cobra R$ 2,29 a R$ 2,46 por Wp INSTALADO. William cobrou R$ 3,52 por Wp INSTALADO."),
@@ -694,28 +703,75 @@ for t in rec:
 # =====================================================================
 # COMPARATIVO
 # =====================================================================
+OPT = [
+    dict(L="A) TecSolarSP\nJA Solar 615W\nHuawei 6 kW", vend="TecSolarSP (11) 97365-9192",
+         cnpj="29.775.600/0001-03", doc="Cotacao Belenergy WEB-006506779", tipo="MATERIAL apenas",
+         qty=12, wp=615, mod="JA Solar bifacial N-type", inv="Huawei 6 kW mono 220V 2 MPPT", ac=6.0,
+         mppt="2", volt="220 V (2 fases)", telha="Fibrocimento", gmod="nao informada", ginv="nao informada",
+         gserv="nao informada", excl="nao informadas", price=18228.70, extra=0, homol=790,
+         instal="=6900/10*{c}9", promise=10554, mat=True),
+    dict(L="B) TecSolarSP\nAstronergy 605W\nHuawei 6 kW", vend="TecSolarSP (11) 97365-9192",
+         cnpj="29.775.600/0001-03", doc="Cotacao Belenergy WEB-006512519", tipo="MATERIAL apenas",
+         qty=12, wp=605, mod="Astronergy bifacial N-type", inv="Huawei 6 kW mono 220V 2 MPPT", ac=6.0,
+         mppt="2", volt="220 V (2 fases)", telha="Fibrocimento", gmod="nao informada", ginv="nao informada",
+         gserv="nao informada", excl="nao informadas", price=17307.90, extra=0, homol=790,
+         instal="=6900/10*{c}9", promise=0, mat=True),
+    dict(L="C) SunWash\nTCL 620W\nAUXSOL 5 kW", vend="SunWash - Yuri (16) 99353-4346",
+         cnpj="NAO INFORMADO", doc="WhatsApp 10/08/2026", tipo="INSTALADO (turnkey)",
+         qty=10, wp=620, mod="TCL 620 W (tecnologia a confirmar)", inv="AUXSOL 5 kW (modelo nao informado)",
+         ac=5.0, mppt="a confirmar", volt="220 V (a confirmar)", telha="nao informada", gmod="nao informada",
+         ginv="nao informada", gserv="nao informada", excl="nao informadas", price=14220.34, extra=1800,
+         homol=0, instal=0, promise=8400, mat=False),
+    dict(L="D) SunWash\nTCL 620W\nHUAWEI 5 kW", vend="SunWash - Yuri (16) 99353-4346",
+         cnpj="NAO INFORMADO", doc="WhatsApp 10/08/2026", tipo="INSTALADO (turnkey)",
+         qty=10, wp=620, mod="TCL 620 W (tecnologia a confirmar)", inv="HUAWEI 5 kW (modelo nao informado)",
+         ac=5.0, mppt="a confirmar", volt="220 V (a confirmar)", telha="nao informada", gmod="nao informada",
+         ginv="nao informada", gserv="nao informada", excl="nao informadas", price=15220.34, extra=1800,
+         homol=0, instal=0, promise=8400, mat=False),
+    dict(L="E) William\nMaxeon 535W\nSolis 4 kW", vend="William (11) 99636-5333",
+         cnpj="NAO INFORMADO", doc="Proposta tecnica de 7 paginas", tipo="INSTALADO (turnkey)",
+         qty=10, wp=535, mod="Maxeon bifacial PERC", inv="Solis 4 kW mono 220V 2 MPPT", ac=4.0,
+         mppt="2", volt="220 V (2 fases)", telha="Colonial", gmod="nao informada", ginv="nao informada",
+         gserv="nao informada", excl="nao informadas", price=11158.91, extra=0, homol=790, instal=6900,
+         promise=6151, mat=True),
+    dict(L="F) Sun Coast\nRONMA 585W\nAUXSOL 3 kW", vend="Sun Coast - Alexandre (11) 91544-8947",
+         cnpj="47.864.839/0001-31", doc="Proposta 40436 de 11/08/2026 (val. 20/08)", tipo="INSTALADO (turnkey)",
+         qty=8, wp=585, mod="RONMA SOLAR bifacial N-type 144 cel", inv="AUXSOL 3 kW mono 220V 1 MPPT",
+         ac=3.0, mppt="1", volt="220 V (2 fases)", telha="Colonial",
+         gmod="25 anos eficiencia / 15 anos defeito", ginv="10 a 25 anos", gserv="12 meses",
+         excl="padrao de entrada, obras civis, telhado, eletrodutos, ART estrutural",
+         price=12387.64, extra=0, homol=0, instal=0, promise=6367.50, mat=False),
+    dict(L="G) Bruno G4\n(a receber)", vend="Bruno G4 (11) 96861-7830", cnpj="", doc="Nada recebido",
+         tipo="?", qty="", wp="", mod="", inv="", ac="", mppt="", volt="", telha="", gmod="", ginv="",
+         gserv="", excl="", price="", extra="", homol="", instal="", promise="", mat=False),
+]
+NOPT = len(OPT)
+CL = [get_column_letter(3 + i) for i in range(NOPT)]   # C..I
+NOTECOL = 3 + NOPT                                     # J
+
 ws = sheet("COMPARATIVO")
-for col, w in [("A", 3), ("B", 44), ("C", 16), ("D", 16), ("E", 16), ("F", 16), ("G", 16), ("H", 14), ("I", 50)]:
-    ws.column_dimensions[col].width = w
+ws.column_dimensions["A"].width = 3
+ws.column_dimensions["B"].width = 42
+for cl in CL:
+    ws.column_dimensions[cl].width = 17
+ws.column_dimensions[get_column_letter(NOTECOL)].width = 62
 title(ws, "COMPARATIVO DOS ORCAMENTOS - QUADRO PRINCIPAL",
-      "Colunas A e B: TecSolarSP (custo de MATERIAL). Colunas C e D: SunWash (INSTALADO). Coluna E: William (INSTALADO). Coluna F: Bruno G4, a receber.")
-hdr_row(ws, 4, ["ITEM", "A) TecSolarSP\nJA Solar 615W\nHuawei 6 kW", "B) TecSolarSP\nAstronergy 605W\nHuawei 6 kW",
-                "C) SunWash\nTCL 620W\nAUXSOL 5 kW", "D) SunWash\nTCL 620W\nHUAWEI 5 kW", "E) William\nMaxeon 535W\nSolis 4 kW",
-                "F) Bruno G4\n(a receber)", "OBSERVACOES / ALERTAS"], start=2)
-ws.row_dimensions[4].height = 46
-OC = ["C", "D", "E", "F", "G", "H"]
+      "Colunas A e B: TecSolarSP, preco de MATERIAL. Colunas C a F: preco INSTALADO. Coluna G reservada. A linha 31 e a unica comparavel entre todos.")
+hdr_row(ws, 4, ["ITEM"] + [o["L"] for o in OPT] + ["OBSERVACOES / ALERTAS"], start=2)
+ws.row_dimensions[4].height = 52
 
 
 def crow(r, label, vals, fmt=None, note="", bold=False, fill=None, inputs=False, textrow=False):
     c = ws.cell(row=r, column=2, value=label)
     c.font = BOLD if bold else BLACK
+    c.alignment = Alignment(wrap_text=True, vertical="center")
     for i, v in enumerate(vals):
         cell = ws.cell(row=r, column=3 + i)
         cell.value = v
         isf = isinstance(v, str) and v.startswith("=")
         if isf:
             cell.font = BOLD if bold else BLACK
-        elif inputs:
+        elif inputs and v != "":
             cell.font = BLUE
             cell.fill = YEL
         else:
@@ -726,175 +782,149 @@ def crow(r, label, vals, fmt=None, note="", bold=False, fill=None, inputs=False,
         cell.alignment = Alignment(horizontal="center", wrap_text=True, vertical="center")
         if fill and not inputs:
             cell.fill = fill
-    cn = ws.cell(row=r, column=9, value=note)
+        if isinstance(v, str) and ("NAO INFORMADO" in v or v.startswith("padrao de entrada")):
+            cell.font = REDS
+    cn = ws.cell(row=r, column=NOTECOL, value=note)
     cn.font = REDS if note.startswith("ALERTA") else SMALL
     cn.alignment = Alignment(wrap_text=True, vertical="top")
 
 
-crow(5, "Fornecedor / contato", ["TecSolarSP (11) 97365-9192", "TecSolarSP (11) 97365-9192",
-                                 "SunWash - Yuri (16) 99353-4346", "SunWash - Yuri (16) 99353-4346",
-                                 "William (11) 99636-5333", "Bruno G4 (11) 96861-7830"], textrow=True,
-     note="ALERTA: nem a proposta do William nem a mensagem da SunWash trazem CNPJ ou razao social. Sem isso nao ha a quem cobrar garantia.")
-crow(6, "Documento recebido", ["Cotacao Belenergy WEB-006506779", "Cotacao Belenergy WEB-006512519",
-                              "Mensagem de WhatsApp (10/08/2026)", "Mensagem de WhatsApp (10/08/2026)",
-                              "Proposta tecnica de 7 paginas", "Nada"], textrow=True,
-     note="ALERTA: orcamento por WhatsApp nao e proposta comercial. Exigir PDF com CNPJ, escopo item a item, garantias e prazo.")
-crow(7, "TIPO DE PRECO", ["MATERIAL apenas", "MATERIAL apenas", "INSTALADO (turnkey)", "INSTALADO (turnkey)", "INSTALADO (turnkey)", "?"],
-     textrow=True, bold=True, fill=BAD_F,
-     note="ALERTA: comparar material com instalado e o erro mais comum. Preencha a linha 22 para tornar A e B comparaveis.")
-crow(8, "Quantidade de modulos", [12, 12, 10, 10, 10, ""], NUM0, inputs=True,
-     note="Todas informadas pelos fornecedores.")
-crow(9, "Potencia por modulo (W)", [615, 605, 620, 620, 535, ""], NUM0, inputs=True,
-     note="A SunWash escreveu '620kw', que e erro de digitacao para 620 W. Confirmar na ficha tecnica.")
-crow(10, "Fabricante / tecnologia do modulo", ["JA Solar bifacial N-type", "Astronergy bifacial N-type",
-                                               "TCL 620 W (tecnologia a confirmar)", "TCL 620 W (tecnologia a confirmar)",
-                                               "Maxeon bifacial PERC", ""], textrow=True,
-     note="ALERTA: o modulo do William e PERC, uma geracao atras. TCL e fabricante grande de wafer, mas com pouca rede de assistencia de MODULO no Brasil - exigir registro INMETRO e quem honra a garantia aqui.")
-crow(11, "POTENCIA DC (kWp)", ["=C8*C9/1000", "=D8*D9/1000", "=E8*E9/1000", "=F8*F9/1000", "=G8*G9/1000", ""],
-     NUM2, bold=True, fill=BAND, note="Quantidade x potencia do modulo / 1000.")
-crow(12, "Inversor", ["Huawei 6 kW mono 220V 2 MPPT", "Huawei 6 kW mono 220V 2 MPPT",
-                      "AUXSOL 5 kW (modelo nao informado)", "HUAWEI 5 kW (modelo nao informado)",
-                      "Solis 4 kW mono 220V 2 MPPT", ""], textrow=True,
-     note="ALERTA: AUXSOL e marca de baixa penetracao no Brasil. A diferenca de R$ 1.000 para o Huawei e o melhor R$ 1.000 do projeto - ver linha 62.")
-crow(13, "Potencia AC (kW)", [6.0, 6.0, 5.0, 5.0, 4.0, ""], NUM2, inputs=True,
-     note="Confirmar o codigo exato do modelo e se e 220 V monofasico.")
-crow(14, "Relacao DC/AC", ["=IFERROR(C11/C13,0)", "=IFERROR(D11/D13,0)", "=IFERROR(E11/E13,0)",
-                           "=IFERROR(F11/F13,0)", "=IFERROR(G11/G13,0)", ""], '0.00"x"',
-     note="Faixa saudavel de 1,10 a 1,35. O William esta em 1,34 - no limite, sem folga nenhuma.")
-crow(15, "Tensao de operacao do inversor", ["220 V (2 fases)", "220 V (2 fases)", "220 V (a confirmar)",
-                                            "220 V (a confirmar)", "220 V (2 fases)", ""], textrow=True,
-     fill=BAD_F, note="ALERTA MAIOR DE TODOS: sua ligacao e MONOFASICA (127 V na Enel SP). Todos exigem mudanca de padrao para bifasico.")
+def sec(r, txt):
+    ws.cell(row=r, column=2, value=txt).font = SUB
+    for c in range(2, NOTECOL + 1):
+        ws.cell(row=r, column=c).fill = BAND
 
-ws.cell(row=17, column=2, value="PRECOS").font = SUB
-for c in range(2, 10):
-    ws.cell(row=17, column=c).fill = BAND
-crow(18, "Preco BASE informado (R$)", [18228.70, 17307.90, 14220.34, 15220.34, 11158.91, ""], MONEY, inputs=True,
-     note="A, B e E: valor do KIT/material (cotacoes Belenergy). C e D: 'projeto completo' a vista informado pelo Yuri, ja com instalacao. Nas colunas C e D as linhas 20 e 21 ficam zeradas para nao contar duas vezes.")
-crow(19, "Acrescimo regional a confirmar (R$)", [0, 0, 1800.0, 1800.0, 0, ""], MONEY, inputs=True,
-     note="ALERTA: a SunWash informou +R$ 1.800 pela sua regiao no kit Intelbras. Nao repetiu no orcamento TCL. Mantido aqui por PRUDENCIA. Se nao incidir, zere e o payback melhora.")
-crow(20, "Homologacao / engenharia / ART (R$)", [790.0, 790.0, 0, 0, 790.0, ""], MONEY, inputs=True,
-     note="E: R$ 790 declarado pelo William. A e B: mesmo valor como referencia - CONFIRMAR com a TecSolarSP. C e D: o Yuri afirma que homologacao esta inclusa - EXIGIR POR ESCRITO.")
-crow(21, "Instalacao / mao de obra (R$)", ["=6900/10*C8", "=6900/10*D8", 0, 0, 6900.0, ""], MONEY, inputs=True,
-     note="ALERTA: E = R$ 6.900 declarado pelo William para 10 modulos. A e B usam esse mesmo valor escalado por modulo, como ESTIMATIVA - a TecSolarSP ainda NAO informou o preco de venda dela.")
-crow(22, "Adequacao do padrao mono -> bifasico (R$)", ["=ENTRADAS!$C$28", "=ENTRADAS!$C$28", "=ENTRADAS!$C$28",
-                                                       "=ENTRADAS!$C$28", "=ENTRADAS!$C$28", ""], MONEY,
-     note="ALERTA: nenhum dos quatro incluiu. Necessario para qualquer inversor de 220 V. Editavel na aba ENTRADAS, celula C28.")
-crow(23, "PRECO TOTAL INSTALADO (R$)", ["=SUM(C18:C22)", "=SUM(D18:D22)", "=SUM(E18:E22)",
-                                        "=SUM(F18:F22)", "=SUM(G18:G22)", ""], MONEY, bold=True, fill=WARN_F,
+
+F_ = lambda f: [f.replace("{c}", cl) if o["qty"] != "" else "" for cl, o in zip(CL, OPT)]
+
+crow(5, "Fornecedor / contato", [o["vend"] for o in OPT], textrow=True,
+     note="Seis orcamentos de cinco empresas diferentes. O Bruno G4 ainda nao enviou nada.")
+crow(6, "CNPJ informado na proposta", [o["cnpj"] for o in OPT], textrow=True,
+     note="ALERTA: SunWash e William nao informaram CNPJ. Sem CNPJ nao existe garantia exigivel. Sun Coast e a unica que trouxe CNPJ na propria proposta.")
+crow(7, "Documento recebido", [o["doc"] for o in OPT], textrow=True,
+     note="ALERTA: orcamento por WhatsApp nao e proposta comercial. So Sun Coast e William entregaram documento formal.")
+crow(8, "TIPO DE PRECO", [o["tipo"] for o in OPT], textrow=True, bold=True, fill=BAD_F,
+     note="ALERTA: comparar MATERIAL com INSTALADO e o erro mais comum. As linhas 28 a 30 corrigem isso.")
+crow(9, "Quantidade de modulos", [o["qty"] for o in OPT], NUM0, inputs=True, note="Informada por cada fornecedor.")
+crow(10, "Potencia por modulo (W)", [o["wp"] for o in OPT], NUM0, inputs=True,
+     note="A SunWash escreveu '620kw', erro de digitacao para 620 W.")
+crow(11, "Fabricante / tecnologia do modulo", [o["mod"] for o in OPT], textrow=True,
+     note="ALERTA: Maxeon do William e PERC, uma geracao atras. TCL e RONMA sao marcas com pouquissima rede de assistencia de modulo no Brasil - exigir INMETRO e quem honra a garantia aqui.")
+crow(12, "POTENCIA DC (kWp)", F_("={c}9*{c}10/1000"), NUM2, bold=True, fill=BAND,
+     note="Quantidade x potencia / 1000.")
+crow(13, "Inversor", [o["inv"] for o in OPT], textrow=True,
+     note="ALERTA: AUXSOL tem baixa penetracao no Brasil. Huawei e Solis tem assistencia estabelecida.")
+crow(14, "Potencia AC do inversor (kW)", [o["ac"] for o in OPT], NUM2, inputs=True,
+     note="Exigir o codigo exato do modelo e a confirmacao de que e 220 V.")
+crow(15, "Numero de MPPTs", [o["mppt"] for o in OPT], textrow=True,
+     note="ALERTA: a Sun Coast usa inversor de 1 MPPT UNICO. Todos os 8 modulos ficam numa unica string: exige mesma orientacao e inclinacao, e sombra em um modulo derruba a string inteira.")
+crow(16, "RELACAO DC/AC", F_("=IFERROR({c}12/{c}14,0)"), '0.00"x"', bold=True,
+     note="ALERTA: faixa saudavel de 1,10 a 1,35. Sun Coast fica em 1,56 - acima do limite, com corte de potencia (clipping) nas melhores horas e risco de perder a garantia do inversor. William em 1,34, no limite.")
+crow(17, "Tensao de operacao", [o["volt"] for o in OPT], textrow=True, fill=BAD_F,
+     note="ALERTA MAIOR: sua ligacao e MONOFASICA (127 V na Enel SP). TODOS exigem mudanca para bifasico.")
+crow(18, "Tipo de telha que o orcamento considerou", [o["telha"] for o in OPT], textrow=True,
+     note="ALERTA: William e Sun Coast dizem COLONIAL, TecSolarSP diz FIBROCIMENTO. Dois contra um: provavelmente a TecSolarSP errou a estrutura inteira. RESOLVER isso antes de qualquer compra.")
+crow(19, "Area de telhado estimada (m2)", F_("={c}9*2.64"), NUM2,
+     note="Base: a Sun Coast declara 21,12 m2 para 8 modulos, ou 2,64 m2 por modulo. Sem fotos do telhado NAO foi possivel verificar se essa area existe na agua Sudeste.")
+crow(20, "Garantia declarada do modulo", [o["gmod"] for o in OPT], textrow=True,
+     note="So a Sun Coast declarou garantias na proposta. Dos outros, exigir por escrito.")
+crow(21, "Garantia declarada do inversor", [o["ginv"] for o in OPT], textrow=True,
+     note="'10 a 25 anos' da Sun Coast e vago: exigir o numero exato para o modelo cotado.")
+crow(22, "Garantia declarada do servico", [o["gserv"] for o in OPT], textrow=True,
+     note="12 meses de servico e o minimo de mercado.")
+crow(23, "Exclusoes declaradas na proposta", [o["excl"] for o in OPT], textrow=True,
+     note="ALERTA: a Sun Coast exclui EXPLICITAMENTE a adequacao do padrao de entrada, obras no telhado, eletrodutos e o ART estrutural. E honesto ao declarar, mas o custo e seu. Os outros nao declararam exclusoes - o que nao significa que estejam inclusas.")
+
+sec(25, "PRECOS")
+crow(26, "Preco BASE informado (R$)", [o["price"] for o in OPT], MONEY, inputs=True,
+     note="A, B e E: valor do KIT/material (cotacoes Belenergy). C, D e F: projeto completo, ja com instalacao - por isso as linhas 28 e 29 ficam zeradas nelas.")
+crow(27, "Acrescimo regional a confirmar (R$)", [o["extra"] for o in OPT], MONEY, inputs=True,
+     note="ALERTA: a SunWash citou +R$ 1.800 pela sua regiao no kit Intelbras e nao repetiu no orcamento TCL. Mantido por PRUDENCIA. Se nao incidir, zere e o payback melhora.")
+crow(28, "Homologacao / engenharia / ART (R$)", [o["homol"] for o in OPT], MONEY, inputs=True,
+     note="E: R$ 790 declarado pelo William. A e B: mesmo valor como ESTIMATIVA - a TecSolarSP nunca informou o preco de venda. C, D e F declaram homologacao inclusa.")
+crow(29, "Instalacao / mao de obra (R$)", [(o["instal"].replace("{c}", cl) if isinstance(o["instal"], str) and o["instal"] else o["instal"]) for cl, o in zip(CL, OPT)], MONEY, inputs=True,
+     note="ALERTA: E = R$ 6.900 declarado pelo William para 10 modulos. A e B usam esse valor escalado por modulo, como ESTIMATIVA.")
+crow(30, "Adequacao do padrao mono -> bifasico (R$)", F_("=ENTRADAS!$C$28"), MONEY,
+     note="ALERTA: NENHUM dos seis incluiu, e a Sun Coast exclui por escrito. Necessario para qualquer inversor de 220 V. Editavel em ENTRADAS!C28.")
+crow(31, "PRECO TOTAL INSTALADO (R$)", F_("=SUM({c}26:{c}30)"), MONEY, bold=True, fill=WARN_F,
      note="O UNICO numero comparavel entre fornecedores.")
-crow(24, "R$ por Wp instalado", ["=IFERROR(C23/(C11*1000),0)", "=IFERROR(D23/(D11*1000),0)",
-                                 "=IFERROR(E23/(E11*1000),0)", "=IFERROR(F23/(F11*1000),0)",
-                                 "=IFERROR(G23/(G11*1000),0)", ""], WP, bold=True,
-     note="Metrica de mercado. Quanto menor, melhor - desde que o escopo seja o mesmo.")
-crow(25, "Custo do material por Wp", ["=IFERROR(C18/(C11*1000),0)", "=IFERROR(D18/(D11*1000),0)", "n/d", "n/d",
-                                      "=IFERROR(G18/(G11*1000),0)", ""], WP,
-     note="Mede a margem: A e B sao o custo do integrador. O kit do William custou R$ 11.158,91 (cotacao WEB-006493952).")
+crow(32, "R$ por Wp instalado", F_("=IFERROR({c}31/({c}12*1000),0)"), WP, bold=True,
+     note="Metrica de mercado, valida so entre precos de mesmo escopo.")
+crow(33, "R$ por Wp somente de material", [(f"=IFERROR({cl}26/({cl}12*1000),0)" if o["mat"] else "n/d") if o["qty"] != "" else "" for cl, o in zip(CL, OPT)], WP,
+     note="Mede a margem. A TecSolarSP paga R$ 2,47/Wp de material: use isso para negociar o preco de venda dela.")
 
-ws.cell(row=27, column=2, value="GERACAO - REALIDADE x PROMESSA").font = SUB
-for c in range(2, 10):
-    ws.cell(row=27, column=c).fill = BAND
-crow(28, "Geracao anual realista - telhado SE (kWh)", ["=C11*GERACAO!$I$17", "=D11*GERACAO!$I$17", "=E11*GERACAO!$I$17",
-                                                       "=F11*GERACAO!$I$17", "=G11*GERACAO!$I$17", ""], NUM0,
+sec(35, "GERACAO - REALIDADE x PROMESSA")
+crow(36, "Geracao anual realista - telhado SE (kWh)", F_("={c}12*GERACAO!$I$17"), NUM0,
      note="Irradiacao de Sao Paulo, telhado Sudeste 20 graus, PR de 79%.")
-crow(29, "Geracao media mensal realista (kWh/mes)", ["=C28/12", "=D28/12", "=E28/12", "=F28/12", "=G28/12", ""], NUM0)
-crow(30, "Geracao no cenario CONSERVADOR (PR 72%)", ["=C28/ENTRADAS!$C$31*ENTRADAS!$C$32", "=D28/ENTRADAS!$C$31*ENTRADAS!$C$32",
-                                                     "=E28/ENTRADAS!$C$31*ENTRADAS!$C$32", "=F28/ENTRADAS!$C$31*ENTRADAS!$C$32",
-                                                     "=G28/ENTRADAS!$C$31*ENTRADAS!$C$32", ""], NUM0,
+crow(37, "Geracao media mensal realista (kWh/mes)", F_("={c}36/12"), NUM0)
+crow(38, "Geracao no cenario CONSERVADOR (PR 72%)", F_("={c}36/ENTRADAS!$C$31*ENTRADAS!$C$32"), NUM0,
      note="Pior caso: telhado mais sujo, mais quente ou com sombra parcial.")
-crow(31, "Geracao PROMETIDA pelo vendedor (kWh/ano)", [10554, 0, 8400, 8400, 6151, ""], NUM0, inputs=True,
-     note="A: 10.554 na peca da TecSolarSP. C e D: 700 kWh/mes x 12 informado pelo Yuri. E: 6.151 na proposta do William. B: nao informado.")
-crow(32, "DESVIO DA PROMESSA", ["=IFERROR(C28/C31-1,0)", "=IFERROR(D28/D31-1,0)", "=IFERROR(E28/E31-1,0)",
-                                "=IFERROR(F28/F31-1,0)", "=IFERROR(G28/G31-1,0)", ""], PCT, bold=True, fill=BAD_F,
-     note="ALERTA: negativo = o vendedor promete mais do que o telhado entrega. Positivo = o vendedor foi conservador.")
-crow(33, "Geracao se o telhado fosse NORTE (kWh)", ["=C11*GERACAO!$J$17", "=D11*GERACAO!$J$17", "=E11*GERACAO!$J$17",
-                                                    "=F11*GERACAO!$J$17", "=G11*GERACAO!$J$17", ""], NUM0,
-     note="Compare esta linha com a linha 31: e daqui que saem os numeros otimistas.")
+crow(39, "Geracao PROMETIDA pelo vendedor (kWh/ano)", [o["promise"] for o in OPT], NUM0, inputs=True,
+     note="A: 10.554 na peca da TecSolarSP. C e D: 700 kWh/mes x 12. E: 6.151. F: 6.367,50 (530,62 x 12). B: nao informada.")
+crow(40, "DESVIO DA PROMESSA", F_("=IFERROR({c}36/{c}39-1,0)"), PCT, bold=True, fill=BAD_F,
+     note="ALERTA: negativo = o vendedor promete mais do que o telhado entrega. Positivo = foi conservador.")
+crow(41, "Geracao se o telhado fosse NORTE (kWh)", F_("={c}12*GERACAO!$J$17"), NUM0,
+     note="Compare com a linha 39: e daqui que saem os numeros otimistas.")
 
-ws.cell(row=35, column=2, value="ATENDIMENTO DO CONSUMO").font = SUB
-for c in range(2, 10):
-    ws.cell(row=35, column=c).fill = BAND
-crow(36, "% do consumo atendido SEM o BYD", ["=IFERROR(C28/(BYD!$F$33*12),0)", "=IFERROR(D28/(BYD!$F$33*12),0)",
-                                             "=IFERROR(E28/(BYD!$F$33*12),0)", "=IFERROR(F28/(BYD!$F$33*12),0)",
-                                             "=IFERROR(G28/(BYD!$F$33*12),0)", ""], PCT,
-     note="Cenario 1: so a residencia. Todos parecem otimos aqui - e por isso que os vendedores acham que acertaram.")
-crow(37, "% do consumo atendido COM o BYD (Cenario 2)", ["=IFERROR(C28/(BYD!$F$34*12),0)", "=IFERROR(D28/(BYD!$F$34*12),0)",
-                                                         "=IFERROR(E28/(BYD!$F$34*12),0)", "=IFERROR(F28/(BYD!$F$34*12),0)",
-                                                         "=IFERROR(G28/(BYD!$F$34*12),0)", ""], PCT)
-crow(38, "% do consumo atendido - CENARIO 3", ["=IFERROR(C28/(BYD!$F$35*12),0)", "=IFERROR(D28/(BYD!$F$35*12),0)",
-                                               "=IFERROR(E28/(BYD!$F$35*12),0)", "=IFERROR(F28/(BYD!$F$35*12),0)",
-                                               "=IFERROR(G28/(BYD!$F$35*12),0)", ""], PCT, bold=True, fill=WARN_F,
+sec(43, "ATENDIMENTO DO CONSUMO")
+crow(44, "% atendido SEM o BYD (Cenario 1)", F_("=IFERROR({c}36/(BYD!$F$33*12),0)"), PCT,
+     note="Todos parecem otimos aqui - e por isso que os vendedores acham que acertaram o tamanho.")
+crow(45, "% atendido COM o BYD (Cenario 2)", F_("=IFERROR({c}36/(BYD!$F$34*12),0)"), PCT)
+crow(46, "% atendido no CENARIO 3", F_("=IFERROR({c}36/(BYD!$F$35*12),0)"), PCT, bold=True, fill=WARN_F,
      note="ESTE e o criterio de dimensionamento. Alvo: 95% a 110%. Abaixo de 90% = subdimensionado.")
-crow(39, "Deficit / excedente anual (kWh)", ["=C28-BYD!$G$35", "=D28-BYD!$G$35", "=E28-BYD!$G$35",
-                                             "=F28-BYD!$G$35", "=G28-BYD!$G$35", ""], NUM0,
-     note="Negativo = continua comprando energia. Muito positivo = credito que expira em 60 meses (dinheiro jogado fora).")
-crow(40, "Modulos que faltam para o Cenario 3", ["=IFERROR(ROUNDUP(MAX(0,(BYD!$G$35-C28))/GERACAO!$I$17*1000/C9,0),0)",
-                                                 "=IFERROR(ROUNDUP(MAX(0,(BYD!$G$35-D28))/GERACAO!$I$17*1000/D9,0),0)",
-                                                 "=IFERROR(ROUNDUP(MAX(0,(BYD!$G$35-E28))/GERACAO!$I$17*1000/E9,0),0)",
-                                                 "=IFERROR(ROUNDUP(MAX(0,(BYD!$G$35-F28))/GERACAO!$I$17*1000/F9,0),0)",
-                                                 "=IFERROR(ROUNDUP(MAX(0,(BYD!$G$35-G28))/GERACAO!$I$17*1000/G9,0),0)", ""], NUM0, bold=True)
-crow(41, "Modulos atribuiveis SO ao BYD", ["=IFERROR(ROUNDUP(BYD!$C$13*12/GERACAO!$I$17*1000/C9,0),0)",
-                                           "=IFERROR(ROUNDUP(BYD!$C$13*12/GERACAO!$I$17*1000/D9,0),0)",
-                                           "=IFERROR(ROUNDUP(BYD!$C$13*12/GERACAO!$I$17*1000/E9,0),0)",
-                                           "=IFERROR(ROUNDUP(BYD!$C$13*12/GERACAO!$I$17*1000/F9,0),0)",
-                                           "=IFERROR(ROUNDUP(BYD!$C$13*12/GERACAO!$I$17*1000/G9,0),0)", ""], NUM0,
-     bold=True, fill=WARN_F, note="Placas necessarias apenas para compensar o carregamento do carro.")
+crow(47, "Deficit / excedente anual (kWh)", F_("={c}36-BYD!$G$35"), NUM0,
+     note="Negativo = continua comprando energia todo mes. Muito positivo = credito que expira em 60 meses.")
+crow(48, "Modulos que faltam para o Cenario 3", F_("=IFERROR(ROUNDUP(MAX(0,BYD!$G$35-{c}36)/GERACAO!$I$17*1000/{c}10,0),0)"), NUM0, bold=True)
+crow(49, "Modulos atribuiveis SO ao BYD", F_("=IFERROR(ROUNDUP(BYD!$C$13*12/GERACAO!$I$17*1000/{c}10,0),0)"), NUM0,
+     bold=True, fill=WARN_F, note="Placas que existem no projeto apenas para compensar o carregamento do carro.")
 
-ws.cell(row=43, column=2, value="RESULTADO FINANCEIRO").font = SUB
-for c in range(2, 10):
-    ws.cell(row=43, column=c).fill = BAND
-crow(44, "Conta media mensal HOJE (sem solar, sem BYD)", ["=CONTA!$C$54", "=CONTA!$C$54", "=CONTA!$C$54",
-                                                          "=CONTA!$C$54", "=CONTA!$C$54", ""], MONEY,
-     note="Situacao atual real.")
-crow(45, "Conta media mensal SEM solar mas COM o BYD", ["=ECONOMIA!C8/12", "=ECONOMIA!D8/12", "=ECONOMIA!E8/12",
-                                                        "=ECONOMIA!F8/12", "=ECONOMIA!G8/12", ""], MONEY,
-     note="O que a conta vira se o carro chegar e nao houver energia solar.")
-crow(46, "Conta media mensal COM solar e COM o BYD", ["=ECONOMIA!C19", "=ECONOMIA!D19", "=ECONOMIA!E19",
-                                                      "=ECONOMIA!F19", "=ECONOMIA!G19", ""], MONEY, bold=True,
+sec(51, "RESULTADO FINANCEIRO")
+crow(52, "Conta mensal HOJE (sem solar, sem BYD)", F_("=CONTA!$C$54"), MONEY, note="Situacao atual real: R$ 410,63.")
+crow(53, "Conta mensal SEM solar mas COM o BYD", F_("=ECONOMIA!{c}8/12"), MONEY, note="O que a conta vira se o carro chegar e nao houver solar.")
+crow(54, "Conta mensal COM solar e COM o BYD", F_("=ECONOMIA!{c}19"), MONEY, bold=True,
      note="ALERTA: nao vai a zero. Sobram disponibilidade, Fio B e COSIP.")
-crow(47, "Economia liquida ano 1 (R$/ano)", ["=ECONOMIA!C26", "=ECONOMIA!D26", "=ECONOMIA!E26",
-                                             "=ECONOMIA!F26", "=ECONOMIA!G26", ""], MONEY)
-crow(48, "Economia liquida ano 1 (R$/mes)", ["=C47/12", "=D47/12", "=E47/12", "=F47/12", "=G47/12", ""], MONEY, bold=True)
-crow(49, "PAYBACK SIMPLES (anos)", ["=IFERROR(C23/C47,0)", "=IFERROR(D23/D47,0)", "=IFERROR(E23/E47,0)",
-                                    "=IFERROR(F23/F47,0)", "=IFERROR(G23/G47,0)", ""], NUM2, bold=True, fill=OK_F,
-     note="Investimento total dividido pela economia do ano 1.")
-crow(50, "Economia acumulada em 5 anos (R$)", ["=PROJECAO!E10", "=PROJECAO!H10", "=PROJECAO!K10",
-                                               "=PROJECAO!N10", "=PROJECAO!Q10", ""], MONEY0)
-crow(51, "Economia acumulada em 10 anos (R$)", ["=PROJECAO!E15", "=PROJECAO!H15", "=PROJECAO!K15",
-                                                "=PROJECAO!N15", "=PROJECAO!Q15", ""], MONEY0)
-crow(52, "Economia acumulada em 20 anos (R$)", ["=PROJECAO!E25", "=PROJECAO!H25", "=PROJECAO!K25",
-                                                "=PROJECAO!N25", "=PROJECAO!Q25", ""], MONEY0)
-crow(53, "LUCRO LIQUIDO EM 20 ANOS (R$)", ["=C52-C23", "=D52-D23", "=E52-E23", "=F52-F23", "=G52-G23", ""],
-     MONEY0, bold=True, fill=OK_F, note="Economia de 20 anos menos o investimento. E O MELHOR CRITERIO DE DECISAO FINANCEIRA.")
-crow(54, "Retorno sobre o investimento em 20 anos", ["=IFERROR(C53/C23,0)", "=IFERROR(D53/D23,0)", "=IFERROR(E53/E23,0)",
-                                                     "=IFERROR(F53/F23,0)", "=IFERROR(G53/G23,0)", ""], PCT)
+crow(55, "Economia liquida ano 1 (R$/ano)", F_("=ECONOMIA!{c}26"), MONEY)
+crow(56, "Economia liquida ano 1 (R$/mes)", F_("={c}55/12"), MONEY, bold=True)
+crow(57, "PAYBACK SIMPLES (anos)", F_("=IFERROR({c}31/{c}55,0)"), NUM2, bold=True, fill=OK_F,
+     note="Investimento total dividido pela economia do ano 1. CUIDADO: payback bom nao significa melhor negocio - ver linha 61.")
+PRJ = ["E", "H", "K", "N", "Q", "T"]
+crow(58, "Economia acumulada em 5 anos (R$)", [f"=PROJECAO!{PRJ[i]}10" if i < len(PRJ) else "" for i in range(NOPT)], MONEY0)
+crow(59, "Economia acumulada em 10 anos (R$)", [f"=PROJECAO!{PRJ[i]}15" if i < len(PRJ) else "" for i in range(NOPT)], MONEY0)
+crow(60, "Economia acumulada em 20 anos (R$)", [f"=PROJECAO!{PRJ[i]}25" if i < len(PRJ) else "" for i in range(NOPT)], MONEY0)
+crow(61, "LUCRO LIQUIDO EM 20 ANOS (R$)", F_("={c}60-{c}31"), MONEY0, bold=True, fill=OK_F,
+     note="Economia de 20 anos menos o investimento. E O MELHOR CRITERIO DE DECISAO FINANCEIRA - melhor que o payback.")
+crow(62, "Retorno sobre o investimento em 20 anos", F_("=IFERROR({c}61/{c}31,0)"), PCT)
 
-ws.cell(row=56, column=2, value="EXPANSAO FUTURA").font = SUB
-for c in range(2, 10):
-    ws.cell(row=56, column=c).fill = BAND
-crow(57, "kWp maximo com o mesmo inversor (DC/AC 1,35)", ["=C13*1.35", "=D13*1.35", "=E13*1.35", "=F13*1.35", "=G13*1.35", ""], NUM2)
-crow(58, "Modulos que ainda cabem no inversor", ["=MAX(0,ROUNDDOWN((C57-C11)*1000/C9,0))", "=MAX(0,ROUNDDOWN((D57-D11)*1000/D9,0))",
-                                                 "=MAX(0,ROUNDDOWN((E57-E11)*1000/E9,0))", "=MAX(0,ROUNDDOWN((F57-F11)*1000/F9,0))",
-                                                 "=MAX(0,ROUNDDOWN((G57-G11)*1000/G9,0))", ""], NUM0, bold=True,
-     note="ALERTA: o Solis de 4 kW do William nao aceita nenhum modulo a mais. Ampliar exigiria trocar o inversor e refazer a homologacao.")
-crow(59, "Geracao extra possivel sem trocar inversor (kWh/ano)", ["=C58*C9/1000*GERACAO!$I$17", "=D58*D9/1000*GERACAO!$I$17",
-                                                                  "=E58*E9/1000*GERACAO!$I$17", "=F58*F9/1000*GERACAO!$I$17",
-                                                                  "=G58*G9/1000*GERACAO!$I$17", ""], NUM0)
+sec(64, "EXPANSAO FUTURA")
+crow(65, "kWp maximo com o mesmo inversor (DC/AC 1,35)", F_("={c}14*1.35"), NUM2)
+crow(66, "Modulos que ainda cabem no inversor", F_("=MAX(0,ROUNDDOWN(({c}65-{c}12)*1000/{c}10,0))"), NUM0, bold=True,
+     note="ALERTA: Solis 4 kW e AUXSOL 5 kW e 3 kW nao aceitam nenhum modulo a mais. So as opcoes A e B tem folga - e minima.")
+crow(67, "Geracao extra possivel sem trocar inversor (kWh/ano)", F_("={c}66*{c}10/1000*GERACAO!$I$17"), NUM0)
+crow(68, "Situacao do inversor", F_('=IF({c}16>1.35,"JA SOBRECARREGADO",IF({c}16<1.1,"SUBAPROVEITADO","OK"))'), None, bold=True,
+     note="'JA SOBRECARREGADO' significa que o inversor esta pequeno para os modulos desde o primeiro dia.")
 
-ws.cell(row=61, column=2, value="DECISAO ESPECIFICA: AUXSOL x HUAWEI NA PROPOSTA DA SUNWASH").font = SUB
-for c in range(2, 10):
-    ws.cell(row=61, column=c).fill = BAND
-ws.cell(row=62, column=2, value="Diferenca de preco (Huawei - AUXSOL)").font = BOLD
-frm(ws, "C62", "=F18-E18", MONEY, BOLD)
-ws["C62"].fill = WARN_F
-ws.cell(row=62, column=9, value="R$ 1.000 sobre um projeto de ~R$ 15 mil, ou seja 7%. Ver a analise na aba CHECKLIST.").font = SMALL
-ws.cell(row=63, column=2, value="Diferenca no payback (Huawei - AUXSOL), em anos").font = BLACK
-frm(ws, "C63", "=IFERROR(F49-E49,0)", NUM2)
-ws.cell(row=64, column=2, value="Diferenca no lucro de 20 anos").font = BLACK
-frm(ws, "C64", "=F53-E53", MONEY0)
-ws.cell(row=65, column=2, value="RECOMENDACAO: pagar os R$ 1.000 e ficar com o HUAWEI.").font = RED
-ws.cell(row=66, column=2, value="O inversor e o unico componente que quase certamente sera trocado dentro da vida do sistema. Huawei tem garantia de fabrica").font = BLACK
-ws.cell(row=67, column=2, value="mais longa, assistencia estabelecida no Brasil, monitoramento maduro e valor de revenda. AUXSOL tem penetracao pequena:").font = BLACK
-ws.cell(row=68, column=2, value="se a marca sair do mercado, voce fica com um sistema parado esperando peca. O atraso de ~2 meses no payback nao paga esse risco.").font = BLACK
+ws.cell(row=70, column=2, value="DECISAO ESPECIFICA: AUXSOL x HUAWEI NA PROPOSTA DA SUNWASH").font = SUB
+for c in range(2, NOTECOL + 1):
+    ws.cell(row=70, column=c).fill = BAND
+ws.cell(row=71, column=2, value="Diferenca de preco (Huawei - AUXSOL)").font = BOLD
+frm(ws, "C71", "=F26-E26", MONEY, BOLD)
+ws["C71"].fill = WARN_F
+ws.cell(row=72, column=2, value="Diferenca no payback, em anos").font = BLACK
+frm(ws, "C72", "=IFERROR(F57-E57,0)", NUM2)
+ws.cell(row=73, column=2, value="Diferenca no lucro de 20 anos").font = BLACK
+frm(ws, "C73", "=F61-E61", MONEY0)
+ws.cell(row=74, column=2, value="RECOMENDACAO: pagar os R$ 1.000 e ficar com o HUAWEI.").font = RED
+for i, t in enumerate([
+    "O inversor e o unico componente que quase certamente sera trocado dentro da vida do sistema. Huawei tem garantia de fabrica mais longa,",
+    "assistencia estabelecida no Brasil, monitoramento maduro e valor de revenda. AUXSOL tem penetracao pequena: se a marca sair do mercado,",
+    "voce fica com o sistema parado esperando peca. O atraso de cerca de 2 meses no payback nao paga esse risco.",
+    "",
+    "OBSERVACAO SOBRE PAYBACK x LUCRO: a Sun Coast tem payback parecido com o da SunWash, mas o sistema e 25% menor.",
+    "Payback ignora a energia que voce NAO compensou. Um sistema pequeno se paga rapido e depois te deixa pagando conta para sempre.",
+    "Por isso a linha 61 (lucro em 20 anos) e o criterio correto, e nao a linha 57.",
+]):
+    c = ws.cell(row=75 + i, column=2, value=t)
+    c.font = RED if t.startswith("OBSERVACAO") else BLACK
 
 # =====================================================================
 # BOM_DETALHADO
@@ -913,7 +943,7 @@ bom = [
     ("Inversor", "Huawei 6 kW mono 220 V 2 MPPT", "Huawei 6 kW mono 220 V 2 MPPT", "Solis 4 kW mono 220 V 2 MPPT",
      "TODOS de 220 V - incompativeis com o padrao monofasico atual sem adequacao. O Solis de 4 kW limita a expansao futura a zero."),
     ("Estrutura - suporte de telhado", "18 pc suporte pe em L FIBROCIMENTO", "18 pc suporte pe em L FIBROCIMENTO",
-     "10 pc gancho telha COLONIAL c/ prolongador", "CONTRADICAO GRAVE: TecSolarSP cotou fibrocimento, William cotou telha colonial. Um dos dois nao viu o telhado. Resolver antes de comprar."),
+     "10 pc gancho telha COLONIAL c/ prolongador", "CONTRADICAO GRAVE: TecSolarSP cotou FIBROCIMENTO; William e Sun Coast cotaram TELHA COLONIAL. Dois contra um. Se for colonial, a estrutura das duas cotacoes da TecSolarSP esta errada. Resolver com uma foto antes de comprar."),
     ("Haste / fixacao", "18 pc haste 10x250 mm inox (madeira)", "20 pc haste 10x250 mm inox", "incluso no gancho",
      "Fixacao por perfuracao exige vedacao com arruela EPDM. Exigir garantia contra infiltracao."),
     ("Perfil de fixacao", "24 pc de 2,70 m", "24 pc de 2,70 m", "10 pc de 2,28 m",
@@ -1019,19 +1049,21 @@ ws.cell(row=rr, column=4, value="Se der acima de ~6 anos, a diferenca NAO se pag
 # ECONOMIA
 # =====================================================================
 ws = sheet("ECONOMIA")
-for col, w in [("A", 3), ("B", 50), ("C", 15), ("D", 15), ("E", 15), ("F", 15), ("G", 15), ("H", 15), ("I", 56)]:
-    ws.column_dimensions[col].width = w
+ws.column_dimensions["A"].width = 3
+ws.column_dimensions["B"].width = 48
+for cl in CL:
+    ws.column_dimensions[cl].width = 15
+ws.column_dimensions[get_column_letter(NOTECOL)].width = 56
 title(ws, "MODELO DE ECONOMIA - ANO 1, PELAS REGRAS DA LEI 14.300/2022",
       "Base: Cenario 3 (residencia + BYD + margem). A conta NAO vai a zero: permanecem custo de disponibilidade, Fio B e COSIP.")
-hdr_row(ws, 4, ["LINHA DE CALCULO", "A) TecSolarSP 615W", "B) TecSolarSP 605W", "C) SunWash AUXSOL",
-                "D) SunWash HUAWEI", "E) William", "F) Bruno G4", "EXPLICACAO"], start=2)
-ws.row_dimensions[4].height = 32
+hdr_row(ws, 4, ["LINHA DE CALCULO"] + [o["L"].replace("\n", " ") for o in OPT] + ["EXPLICACAO"], start=2)
+ws.row_dimensions[4].height = 34
 eco = [
     (5, "Consumo anual - Cenario 3 (kWh)", "=BYD!$G$35", NUM0, "Residencia + BYD + margem de crescimento"),
-    (6, "Geracao anual do sistema (kWh)", "=COMPARATIVO!{c}28", NUM0, "Geracao realista no telhado Sudeste"),
+    (6, "Geracao anual do sistema (kWh)", "=COMPARATIVO!{c}36", NUM0, "Geracao realista no telhado Sudeste"),
     (7, "Tarifa efetiva (R$/kWh)", "=ENTRADAS!$C$18", MONEY, "R$ 1,0215 - calculado da fatura real de jul/2026"),
     (8, "CONTA ANUAL SEM SOLAR, COM O BYD (R$)", "={c}5*{c}7+ENTRADAS!$C$26*12", MONEY, "O cenario que voce enfrenta se nao instalar nada e o carro chegar"),
-    (9, "Autoconsumo instantaneo (kWh)", "=MIN({c}5,{c}6)*ENTRADAS!$C$37", NUM0, "Usado no mesmo instante da geracao: nao passa pelo medidor, nao paga nada"),
+    (9, "Autoconsumo instantaneo (kWh)", "=MIN({c}5,{c}6)*ENTRADAS!$C$37", NUM0, "Usado no instante da geracao: nao passa pelo medidor, nao paga nada"),
     (10, "Energia injetada na rede (kWh)", "={c}6-{c}9", NUM0, "Vira credito de energia"),
     (11, "Consumo minimo faturavel - disponibilidade (kWh)", "=ENTRADAS!$C$17*12", NUM0, "50 kWh/mes apos virar bifasico. Nunca compensavel"),
     (12, "Energia compensada com creditos (kWh)", "=MAX(0,MIN({c}10,{c}5-{c}9-{c}11))", NUM0, "Limitada pelo consumo restante apos autoconsumo e disponibilidade"),
@@ -1046,32 +1078,32 @@ eco = [
     (21, "Economia bruta anual (R$)", "={c}8-{c}18", MONEY, ""),
     (22, "Manutencao e limpeza (R$/ano)", "=ENTRADAS!$C$35", MONEY, "Custo recorrente real"),
     (23, "Provisao para troca do inversor (R$/ano)", "=ENTRADAS!$C$36", MONEY, "O inversor nao dura os 25 anos do modulo"),
-    (24, "Perda por degradacao no 1o ano", "=0", MONEY, "Ja embutida no fator de geracao da aba PROJECAO"),
+    (24, "Reservado", "=0", MONEY, "Degradacao ja tratada no fator de geracao da aba PROJECAO"),
     (25, "Subtotal de custos recorrentes (R$)", "={c}22+{c}23", MONEY, ""),
     (26, "ECONOMIA LIQUIDA NO ANO 1 (R$)", "={c}21-{c}25", MONEY, "Base do payback e da projecao de 20 anos"),
 ]
-cols = ["C", "D", "E", "F", "G", "H"]
 for r, label, f, fmt, note in eco:
     c = ws.cell(row=r, column=2, value=label)
     c.font = BOLD if label.isupper() else BLACK
-    for cl in cols:
-        if cl == "H":
-            ws[f"H{r}"] = ""
-            ws[f"H{r}"].border = BOX
+    for cl, o in zip(CL, OPT):
+        if o["qty"] == "":
+            ws[f"{cl}{r}"] = ""
+            ws[f"{cl}{r}"].border = BOX
             continue
         frm(ws, f"{cl}{r}", f.replace("{c}", cl), fmt, BOLD if label.isupper() else BLACK)
         ws[f"{cl}{r}"].border = BOX
         if label.isupper():
             ws[f"{cl}{r}"].fill = WARN_F
-    cn = ws.cell(row=r, column=9, value=note)
+    cn = ws.cell(row=r, column=NOTECOL, value=note)
     cn.font = SMALL
     cn.alignment = Alignment(wrap_text=True, vertical="top")
-for cl in cols[:5]:
-    ws[f"{cl}26"].fill = OK_F
-    ws[f"{cl}8"].fill = BAD_F
+for cl, o in zip(CL, OPT):
+    if o["qty"] != "":
+        ws[f"{cl}26"].fill = OK_F
+        ws[f"{cl}8"].fill = BAD_F
 
 ws.cell(row=28, column=2, value="SIMULACAO SEM CARRO x COM CARRO (impacto isolado do BYD)").font = SUB
-for c in range(2, 10):
+for c in range(2, NOTECOL + 1):
     ws.cell(row=28, column=c).fill = BAND
 sim = [
     (29, "Consumo anual SEM o BYD (kWh)", "=BYD!$F$33*12", NUM0, "Media real da conta x 12"),
@@ -1080,17 +1112,17 @@ sim = [
     (32, "Acrescimo percentual sobre o consumo atual", "=IFERROR(C30/C29-1,0)", PCT, "Por isso a media da conta nao serve de base"),
     (33, "Conta anual SEM solar e SEM o BYD (R$)", "=C29*ENTRADAS!C18+ENTRADAS!C26*12", MONEY, "Sua situacao de hoje"),
     (34, "Conta anual SEM solar e COM o BYD (R$)", "=C30*ENTRADAS!C18+ENTRADAS!C26*12", MONEY, "O carro sozinho encarece a conta neste valor"),
-    (35, "Custo anual so do BYD sem energia solar (R$)", "=C31*ENTRADAS!C18", MONEY, "O que o carro custaria de energia na tarifa cheia"),
+    (35, "Custo anual so do BYD sem energia solar (R$)", "=C31*ENTRADAS!C18", MONEY, "Na tarifa cheia"),
     (36, "Custo anual so do BYD com energia solar (R$)", "=C31*ENTRADAS!C25", MONEY, "Compensado: paga-se apenas o Fio B"),
     (37, "ECONOMIA ANUAL SO NO CARREGAMENTO DO BYD (R$)", "=C35-C36", MONEY, "O melhor retorno marginal do projeto"),
-    (38, "Numero de placas de 615 W dedicadas ao BYD", "=IFERROR(ROUNDUP(C31/GERACAO!I17*1000/615,0),0)", NUM0, "Quantas placas existem no projeto por causa do carro"),
+    (38, "Numero de placas de 615 W dedicadas ao BYD", "=IFERROR(ROUNDUP(C31/GERACAO!I17*1000/615,0),0)", NUM0, "Placas que existem por causa do carro"),
 ]
 for r, lab, f, fmt, note in sim:
     ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
     frm(ws, f"C{r}", f, fmt, BOLD if lab.isupper() else BLACK)
     if lab.isupper():
         ws[f"C{r}"].fill = OK_F
-    ws.cell(row=r, column=9, value=note).font = SMALL
+    ws.cell(row=r, column=NOTECOL, value=note).font = SMALL
 
 # =====================================================================
 # PROJECAO
@@ -1099,20 +1131,22 @@ ws = sheet("PROJECAO")
 ws.column_dimensions["A"].width = 3
 ws.column_dimensions["B"].width = 7
 ws.column_dimensions["C"].width = 12
-for i in range(4, 22):
+CALC = [(cl, o) for cl, o in zip(CL, OPT) if o["qty"] != ""]
+heads = ["Ano", "Fator geracao"]
+grupos = []
+col = 4
+for cl, o in CALC:
+    nm = o["L"].split("\n")[0]
+    heads += [f"{nm}\nEconomia", f"{nm}\nAcumulado", f"{nm}\nFluxo"]
+    grupos.append((get_column_letter(col), get_column_letter(col + 1), get_column_letter(col + 2),
+                   f"ECONOMIA!{cl}$26", f"COMPARATIVO!{cl}$31"))
+    col += 3
+for i in range(4, col):
     ws.column_dimensions[get_column_letter(i)].width = 14
 title(ws, "PROJECAO DE 20 ANOS, ECONOMIA ACUMULADA E PAYBACK",
-      "Economia do ano 1 corrigida por inflacao energetica e degradacao dos modulos, menos O&M. 'Fluxo' = acumulado menos o investimento.")
-heads = ["Ano", "Fator geracao"]
-for nome in ["A) TecSolar 615", "B) TecSolar 605", "C) SunWash AUXSOL", "D) SunWash HUAWEI", "E) William"]:
-    heads += [f"{nome}\nEconomia", f"{nome}\nAcumulado", f"{nome}\nFluxo"]
+      "Economia do ano 1 corrigida por inflacao energetica e degradacao, menos O&M. 'Fluxo' = acumulado menos o investimento; fica positivo no ano do payback.")
 hdr_row(ws, 4, heads, start=2)
-ws.row_dimensions[4].height = 44
-grupos = [("D", "E", "F", "ECONOMIA!C$26", "COMPARATIVO!C$23"),
-          ("G", "H", "I", "ECONOMIA!D$26", "COMPARATIVO!D$23"),
-          ("J", "K", "L", "ECONOMIA!E$26", "COMPARATIVO!E$23"),
-          ("M", "N", "O", "ECONOMIA!F$26", "COMPARATIVO!F$23"),
-          ("P", "Q", "R", "ECONOMIA!G$26", "COMPARATIVO!G$23")]
+ws.row_dimensions[4].height = 46
 for i in range(20):
     r = 6 + i
     ano = i + 1
@@ -1123,14 +1157,18 @@ for i in range(20):
         frm(ws, f"{ce}{r}", f"={eco_ref}*C{r}/$C$6*(1+ENTRADAS!$C$27)^({ano}-1)", MONEY0)
         frm(ws, f"{ca}{r}", f"={ce}{r}" if i == 0 else f"={ca}{r-1}+{ce}{r}", MONEY0)
         frm(ws, f"{cf}{r}", f"={ca}{r}-{inv_ref}", MONEY0)
-    for cc in range(2, 20):
+    for cc in range(2, col):
         ws.cell(row=r, column=cc).border = BOX
         if ano in (5, 10, 20):
             ws.cell(row=r, column=cc).fill = BAND
-ws.cell(row=27, column=2, value="Anos 5, 10 e 20 destacados. As colunas 'Fluxo' viram positivas no ano do payback ja corrigido.").font = SMALL
-ws.cell(row=28, column=2, value="Nao inclui: troca do inversor no ano ~13 (provisionada em R$ 150/ano na aba ECONOMIA), reajustes de bandeira,").font = SMALL
-ws.cell(row=29, column=2, value="nem a mudanca da regra do Fio B (60% em 2026 -> 100% em 2029), que reduz a economia dos anos seguintes.").font = SMALL
-ws.cell(row=30, column=2, value="Por isso o payback real tende a ser um pouco pior que o calculado, e o carregamento diurno do BYD fica cada vez mais vantajoso.").font = RED
+for i, t in enumerate([
+    "Anos 5, 10 e 20 destacados. As colunas 'Fluxo' viram positivas no ano do payback ja corrigido por inflacao e degradacao.",
+    "Nao inclui: troca do inversor no ano ~13 (provisionada em R$ 150/ano na aba ECONOMIA), reajustes de bandeira tarifaria,",
+    "nem a mudanca da regra do Fio B (60% em 2026 -> 100% em 2029), que reduz a economia dos anos seguintes.",
+    "Por isso o payback real tende a ser um pouco pior que o calculado, e o carregamento diurno do BYD fica cada vez mais vantajoso.",
+]):
+    c = ws.cell(row=27 + i, column=2, value=t)
+    c.font = RED if i == 3 else SMALL
 
 # =====================================================================
 # SIMULACAO_MENSAL
@@ -1202,6 +1240,11 @@ chk = [
     ("R", "ESTRUTURA NAO VALIDADA na cotacao Astronergy: a propria BelEnergy escreveu que 'as estruturas deste orcamento nao foram recomendadas'."),
     ("R", "PROPOSTA SEM CNPJ. A proposta do William nao traz razao social nem CNPJ. Sem isso nao existe garantia exigivel. Pedir o documento com identificacao da empresa."),
     ("R", "'INVERSOR HIBRIDO' NAO COMPROVADO. A peca publicitaria da TecSolarSP anuncia inversor HIBRIDO 6 kW, mas a cotacao traz 'INVHW-MO-220V-6KW'. Exigir o codigo completo do modelo e a confirmacao por escrito de que aceita bateria - hibrido e nao hibrido tem preco e funcao diferentes."),
+    ("R", "SUN COAST: INVERSOR DE 3 kW PARA 4,68 kWp = RELACAO DC/AC DE 1,56. A faixa saudavel e 1,10 a 1,35. Nessa configuracao o inversor corta potencia (clipping) nas melhores horas do dia e a maioria dos fabricantes considera fora da garantia. Exigir do Alexandre o limite de sobrecarga do modelo AUXSOL cotado, por escrito, e a versao com inversor de 4 ou 5 kW."),
+    ("R", "SUN COAST: INVERSOR COM 1 MPPT UNICO. Os 8 modulos ficam numa unica string. Isso exige que todos estejam na MESMA agua, com mesma orientacao e inclinacao, e faz com que sombra em um unico modulo derrube a producao da string inteira. Se o telhado tiver mais de uma agua util, essa configuracao nao serve."),
+    ("R", "SUN COAST EXCLUI POR ESCRITO a adequacao do padrao de entrada, obras no telhado, eletrodutos e eletrocalhas, e o projeto estrutural com ART. E honesto declarar, mas o custo e seu: sao os R$ 2.500 (estimados) do padrao mais o que aparecer no telhado. Somar isso ao preco antes de comparar."),
+    ("R", "MODULO RONMA SOLAR - MARCA A INVESTIGAR. Praticamente sem presenca no Brasil. Exigir registro INMETRO do modelo exato, ficha tecnica e o nome/CNPJ de quem honra os 25 anos de garantia de eficiencia no Brasil. Garantia de 25 anos so vale se existir empresa para honrar."),
+    ("R", "TELHA: AGORA SAO DOIS CONTRA UM. William e Sun Coast cotaram TELHA COLONIAL; a TecSolarSP cotou FIBROCIMENTO. Se a telha for colonial, toda a estrutura das duas cotacoes da TecSolarSP esta errada (18 suportes pe em L de fibrocimento e hastes para madeira). Tirar uma foto do telhado resolve isso em 1 minuto."),
     ("R", "MODULO TCL 620 W - MARCA A INVESTIGAR. A TCL/TCL Zhonghuan e gigante em wafer de silicio, mas a marca de MODULO tem pouca rede de assistencia no Brasil. Exigir: registro INMETRO do modelo exato, ficha tecnica, termos de garantia de produto e de performance, e QUEM honra a garantia no Brasil (importador ou representante com CNPJ)."),
     ("R", "INVERSOR AUXSOL - MARCA DE BAIXA PENETRACAO. O inversor e o componente que mais falha e o que sera trocado antes dos modulos. Por R$ 1.000 a mais a SunWash oferece HUAWEI, com garantia de fabrica maior, assistencia estabelecida e monitoramento maduro. RECOMENDACAO: pagar a diferenca e ficar com o Huawei."),
     ("R", "INVERSOR DE 5 kW COM 6,20 kWp NAO DEIXA FOLGA DE EXPANSAO. O limite pratico de DC/AC de 1,35 da 6,75 kWp: nao cabe nem um modulo de 620 W a mais. Se a quilometragem do BYD crescer, sera preciso trocar o inversor e refazer a homologacao. Pedir a versao com inversor de 6 kW e comparar o preco."),
