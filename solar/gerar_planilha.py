@@ -263,15 +263,24 @@ line(36, "Provisao anual para troca do inversor", "C36", 150.0, MONEY, "R$/ano",
 line(37, "Autoconsumo instantaneo", "C37", 0.30, PCT, "", "Parcela usada no mesmo instante da geracao. Sobe muito se o BYD carregar de dia")
 
 sect(39, "D) BYD HIBRIDO  >>> DADOS NAO INFORMADOS - TUDO AQUI E ESTIMATIVA <<<")
-line(40, "Modelo do veiculo", "C40", "PREENCHER", None, "", "ESTIMATIVA usa Song Plus DM-i. Confirmar: Song Plus / Song Pro / King / Seal 06 / Shark")
-line(41, "Capacidade da bateria", "C41", 18.3, NUM2, "kWh", "ESTIMATIVA (Song Plus DM-i). Confirmar no manual do veiculo")
-line(42, "Consumo eletrico do veiculo", "C42", 17.0, NUM2, "kWh/100km", "ESTIMATIVA de consumo real em modo eletrico para SUV de ~1,8 t")
-line(43, "Distancia percorrida por dia", "C43", 40, NUM0, "km/dia", "ESTIMATIVA - e o dado que mais muda o resultado. PREENCHER")
-line(44, "Dias de carregamento por mes", "C44", 26, NUM0, "dias/mes", "ESTIMATIVA")
+line(40, "Modelo do veiculo", "C40", "BYD Song Pro DM-i GL", None, "", "INFORMADO pelo cliente")
+line(41, "Capacidade da bateria", "C41", 12.9, NUM2, "kWh", "ESTIMATIVA para o Song Pro DM-i - CONFIRMAR no manual, pois a versao GL pode diferir")
+line(42, "Consumo eletrico do veiculo", "C42", 16.0, NUM2, "kWh/100km", "ESTIMATIVA de uso real do Song Pro em modo eletrico. Faixa plausivel: 14 a 18 conforme trajeto e uso de ar-condicionado")
+line(43, "Distancia percorrida por dia", "C43", 80, NUM0, "km/dia", "INFORMADO pelo cliente")
+line(44, "Dias de carregamento por mes", "C44", 26, NUM0, "dias/mes", "ESTIMATIVA - ajuste se rodar tambem nos fins de semana (ate 30)")
 line(45, "Eficiencia de carregamento (tomada -> bateria)", "C45", 0.86, PCT, "", "Perdas do carregador AC, do BMS e termicas. Faixa tecnica de 85% a 90%")
-line(46, "Potencia do carregador (kW = POTENCIA)", "C46", 3.3, NUM2, "kW", "ESTIMATIVA: carregador AC embarcado tipico dos DM-i. Confirmar no modelo")
-line(47, "Horario pretendido de carregamento", "C47", "PREENCHER", None, "", "Define se o carro usa geracao solar direta (melhor) ou credito da rede (paga Fio B)")
+line(46, "Potencia do carregador (kW = POTENCIA)", "C46", 3.3, NUM2, "kW", "ESTIMATIVA: carregador AC embarcado do Song Pro DM-i. CONFIRMAR - define disjuntor e cabo")
+line(47, "Objetivo declarado", "C47", "RODAR TUDO NO ELETRICO", None, "", "INFORMADO pelo cliente. Exige DUAS cargas por dia - ver bloco 7 da aba BYD")
 line(48, "Margem de crescimento futuro do consumo", "C48", 0.15, PCT, "", "Premissa para o Cenario 3. A conta ja mostra alta de 22% em 6 meses e 39% ano a ano")
+line(49, "Reserva da bateria mantida para o modo hibrido", "C49", 0.25, PCT, "", "Os DM-i nao esvaziam a bateria: guardam uma reserva para operar como hibrido. ESTIMATIVA de 25%")
+
+sect(51, "E) BASE DE DIMENSIONAMENTO (calculada da conta real)")
+line(52, "Base residencial PURA - 10 meses antes do degrau", "C52", "=CONTA!C77*30.4", NUM0, "kWh/mes",
+     "352 kWh/mes. E a base USADA nos cenarios, partindo do principio de que o degrau de maio ja e carga do carro", formula=True)
+line(53, "Alternativa: consumo atual medido (com o degrau)", "C53", "=CONTA!C78*30.4", NUM0, "kWh/mes",
+     "468 kWh/mes. Use esta se o degrau for OUTRA carga nova e nao o carro - ver bloco 6 da aba BYD", formula=True)
+line(54, "Custo marginal por modulo adicional (instalado)", "C54", 900.0, MONEY, "R$/modulo",
+     "ESTIMATIVA: modulo + estrutura + cabo + mao de obra, SEM inversor. Usado nas colunas de simulacao G12 e G14. PEDIR O VALOR REAL AO YURI")
 
 # =====================================================================
 # CONTA
@@ -620,9 +629,9 @@ for c in range(2, 9):
     ws.cell(row=31, column=c).fill = BAND
 hdr_row(ws, 32, ["Cenario", "Residencia (kWh/mes)", "BYD (kWh/mes)", "Margem (kWh/mes)",
                  "CONSUMO TOTAL (kWh/mes)", "Consumo anual (kWh)"], start=2)
-cen = [(33, "1 - ATUAL (so a residencia, media de 12 meses)", "=CONTA!C23", "=0", "=0"),
-       (34, "2 - RESIDENCIA + BYD", "=CONTA!C23", "=C13", "=0"),
-       (35, "3 - RESIDENCIA + BYD + CRESCIMENTO", "=CONTA!C23", "=C13", "=(C35+D35)*ENTRADAS!C48")]
+cen = [(33, "1 - So a residencia (base pura, sem o carro)", "=ENTRADAS!C52", "=0", "=0"),
+       (34, "2 - RESIDENCIA + BYD tudo no eletrico", "=ENTRADAS!C52", "=C13", "=0"),
+       (35, "3 - RESIDENCIA + BYD + CRESCIMENTO", "=ENTRADAS!C52", "=C13", "=(C35+D35)*ENTRADAS!C48")]
 for r, lab, res, byd, marg in cen:
     ws.cell(row=r, column=2, value=lab).font = BOLD if r == 35 else BLACK
     frm(ws, f"C{r}", res, NUM0, GREEN)
@@ -715,6 +724,80 @@ for i, t in enumerate([
 ]):
     c = ws.cell(row=65 + i, column=2, value=t)
     c.font = RED if t.startswith(("A linha de 600", "COMO RESOLVER")) else BLACK
+
+ws.cell(row=78, column=2, value="7) LIMITE FISICO DA BATERIA - DA PARA RODAR 80 km/dia SO NO ELETRICO?").font = SUB
+for c in range(2, 9):
+    ws.cell(row=78, column=c).fill = BAND
+lim = [
+    (79, "Bateria nominal do Song Pro DM-i", "=ENTRADAS!C41", NUM2, "kWh", "ESTIMATIVA a confirmar no manual"),
+    (80, "Reserva mantida para o modo hibrido", "=ENTRADAS!C49", PCT, "", "O DM-i nao esvazia a bateria - guarda reserva para rodar como hibrido"),
+    (81, "Energia UTIL por carga (na bateria)", "=C79*(1-C80)", NUM2, "kWh", "E o que sobra para rodar em modo eletrico"),
+    (82, "Energia da REDE por carga completa", "=IFERROR(C81/ENTRADAS!C45,0)", NUM2, "kWh", "Inclui as perdas de carregamento"),
+    (83, "KM COBERTOS POR UMA CARGA", "=IFERROR(C81/(ENTRADAS!C42/100),0)", NUM0, "km", "Autonomia eletrica real por carga"),
+    (84, "km/dia que voce roda", "=ENTRADAS!C43", NUM0, "km/dia", "Informado: 80 km/dia"),
+    (85, "CARGAS NECESSARIAS POR DIA", "=IFERROR(C84/C83,0)", NUM2, "cargas/dia", "Acima de 1 significa que uma carga em casa NAO cobre o dia"),
+    (86, "km/dia que ficam na GASOLINA com uma carga so", "=MAX(0,C84-C83)", NUM0, "km/dia", "Energia que o sistema solar NAO substitui"),
+    (87, "Tempo total de carga por dia no carregador de 3,3 kW", "=IFERROR(C84*ENTRADAS!C42/100/ENTRADAS!C45/ENTRADAS!C46,0)", NUM2, "horas/dia", "Somando as duas sessoes. Nao e o gargalo - o gargalo e o carro estar plugado duas vezes"),
+]
+for r, lab, f, fmt, unit, note in lim:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
+    frm(ws, f"C{r}", f, fmt, BOLD if lab.isupper() else BLACK)
+    if lab.isupper():
+        ws[f"C{r}"].fill = WARN_F
+    ws.cell(row=r, column=4, value=unit).font = SMALL
+    ws.cell(row=r, column=8, value=note).font = SMALL
+frm(ws, "C88", '=IF(C85>1,"NAO COBRE COM UMA CARGA - sao necessarias "&TEXT(C85,"0.0")&" cargas por dia para rodar tudo no eletrico","Uma carga por dia cobre a quilometragem")', None, RED)
+ws["C85"].fill = BAD_F
+ws["C83"].fill = OK_F
+
+ws.cell(row=90, column=2, value="8) ESTRATEGIAS DE CARREGAMENTO E O SISTEMA QUE CADA UMA EXIGE").font = SUB
+for c in range(2, 9):
+    ws.cell(row=90, column=c).fill = BAND
+hdr_row(ws, 91, ["Estrategia de carregamento", "kWh/dia da rede", "kWh/mes da rede",
+                 "Consumo TOTAL (base 352 + carro)", "kWp necessario (+10%)", "Modulos de 650 W"], start=2)
+ws.row_dimensions[91].height = 44
+estr = [
+    (92, "1 - Uma carga por dia em casa (limite da bateria)", "=C82", "cobre ~60 dos 80 km; o resto na gasolina"),
+    (93, "2 - DUAS cargas por dia: 80 km TODO ELETRICO", "=ENTRADAS!C43*ENTRADAS!C42/100/ENTRADAS!C45", "E O SEU OBJETIVO. Exige o carro plugado duas vezes ao dia"),
+    (94, "3 - Carga parcial de hoje (o degrau da conta)", "=IFERROR(CONTA!C80/ENTRADAS!C44,0)", "E o que a conta mostra acontecendo hoje: so ~19 km/dia de carga"),
+]
+for r, lab, f, note in estr:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if r == 93 else BLACK
+    ws.cell(row=r, column=2).alignment = Alignment(wrap_text=True, vertical="center")
+    frm(ws, f"C{r}", f, NUM2)
+    frm(ws, f"D{r}", f"=C{r}*ENTRADAS!C44", NUM0)
+    frm(ws, f"E{r}", f"=ENTRADAS!C52+D{r}", NUM0)
+    frm(ws, f"F{r}", f"=IFERROR(E{r}*12/GERACAO!$I$17*1.1,0)", NUM2)
+    frm(ws, f"G{r}", f"=IFERROR(ROUNDUP(F{r}*1000/650,0),0)", NUM0)
+    ws.cell(row=r, column=8, value=note).font = REDS if r == 93 else SMALL
+    for cc in range(2, 8):
+        ws.cell(row=r, column=cc).border = BOX
+for cl in ["E", "F", "G"]:
+    ws[f"{cl}93"].fill = OK_F
+
+for i, t in enumerate([
+    "O ACHADO MAIS IMPORTANTE DESTE BLOCO:",
+    "O Song Pro DM-i tem bateria de 12,9 kWh. Descontando a reserva que o carro guarda para operar como hibrido,",
+    "sobram cerca de 9,7 kWh uteis por carga, o que rende aproximadamente 60 km de autonomia eletrica.",
+    "Voce roda 80 km/dia. Portanto UMA carga em casa NAO cobre o seu dia - faltam uns 20 km, que vao na gasolina.",
+    "",
+    "Para rodar TUDO no eletrico voce precisa de DUAS sessoes de carga por dia. Isso significa uma destas rotinas:",
+    "  (a) carregar de madrugada e novamente quando voltar para casa no meio do dia; ou",
+    "  (b) carregar em casa e uma segunda vez no trabalho ou em eletroposto.",
+    "O tempo nao e o problema: 4,5 h somadas no carregador de 3,3 kW. O problema e o carro estar plugado duas vezes.",
+    "SE A SUA ROTINA E SAIR E SO VOLTAR NO FIM DO DIA, os 80 km todo eletrico NAO sao possiveis carregando so em casa,",
+    "por mais placas que voce instale. Nesse caso o cenario realista e a Estrategia 1, com ~20 km/dia na gasolina.",
+    "",
+    "CONSEQUENCIA PARA O DIMENSIONAMENTO: a Estrategia 2 exige de 12 a 13 modulos de 650 W (cerca de 7,7 a 8,5 kWp).",
+    "TODOS os dez orcamentos da planilha estao subdimensionados para esse objetivo - o maior deles tem 7,38 kWp.",
+    "",
+    "OPORTUNIDADE: como voce vai carregar duas vezes ao dia, uma das sessoes pode ficar entre 9h e 15h, em cima da",
+    "geracao solar. Isso e autoconsumo instantaneo - nao passa pelo medidor e nao paga Fio B. A premissa de 30% de",
+    "autoconsumo da aba ENTRADAS fica conservadora: com carga diurna do carro ela pode chegar a 45% ou 50%,",
+    "e a economia sobe. Vale carregar de dia sempre que o carro estiver em casa.",
+]):
+    c = ws.cell(row=96 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else (RED if t.startswith(("SE A SUA ROTINA", "CONSEQUENCIA", "OPORTUNIDADE")) else BLACK)
 
 # =====================================================================
 # DIMENSIONAMENTO
@@ -884,7 +967,27 @@ OPT = [
          excl="alvenaria, reforco estrutural e alteracoes na rede pedidas pela concessionaria",
          price=17442.00, extra=0, homol=0, instal=0, promise=6385.01, mat=False, area=25.93,
          pag="a vista ou financiamento em ate 60x"),
-    dict(L="K) Bruno G4\n(a receber)", emp="G4 (razao social a confirmar)", nome="Bruno", fone="(11) 96861-7830", cnpj="", doc="Nada recebido",
+    dict(L="SIMULACAO G12\nMICRO 12x650W\n4x Deye 2,25 kW", emp="SunWash - SIMULACAO, preco a confirmar",
+         nome="Yuri", fone="(16) 99353-4346", cnpj="NAO INFORMADO",
+         doc="SIMULACAO: opcao G escalada para 12 modulos", tipo="INSTALADO (turnkey)",
+         qty=12, wp=650, mod="ZNShine ZXNR-MD132-650 N-type (Tier 1 BNEF)",
+         inv="4x DEYE SUN-S225G4-EU-Q0 = 9,0 kW AC (12 dos 16 canais)", ac=9.0,
+         mppt="4 por micro = 16 canais (12 usados, 4 livres)", volt="220 V (a confirmar)",
+         telha="nao informada", gmod="exigir por escrito", ginv="exigir por escrito (Deye pratica 10 anos)",
+         gserv="exigir por escrito", excl="exigir por escrito",
+         price="={GPRICE}+2*ENTRADAS!$C$54", extra=1800, homol=0, instal=0, promise=0, mat=False, area=None,
+         pag="pedir preco e parcelamento para esta configuracao"),
+    dict(L="SIMULACAO G14\nMICRO 14x650W\n4x Deye 2,25 kW", emp="SunWash - SIMULACAO, preco a confirmar",
+         nome="Yuri", fone="(16) 99353-4346", cnpj="NAO INFORMADO",
+         doc="SIMULACAO: opcao G escalada para 14 modulos", tipo="INSTALADO (turnkey)",
+         qty=14, wp=650, mod="ZNShine ZXNR-MD132-650 N-type (Tier 1 BNEF)",
+         inv="4x DEYE SUN-S225G4-EU-Q0 = 9,0 kW AC (14 dos 16 canais)", ac=9.0,
+         mppt="4 por micro = 16 canais (14 usados, 2 livres)", volt="220 V (a confirmar)",
+         telha="nao informada", gmod="exigir por escrito", ginv="exigir por escrito (Deye pratica 10 anos)",
+         gserv="exigir por escrito", excl="exigir por escrito",
+         price="={GPRICE}+4*ENTRADAS!$C$54", extra=1800, homol=0, instal=0, promise=0, mat=False, area=None,
+         pag="pedir preco e parcelamento para esta configuracao"),
+    dict(L="M) Bruno G4\n(a receber)", emp="G4 (razao social a confirmar)", nome="Bruno", fone="(11) 96861-7830", cnpj="", doc="Nada recebido",
          tipo="?", qty="", wp="", mod="", inv="", ac="", mppt="", volt="", telha="", gmod="", ginv="",
          gserv="", excl="", price="", extra="", homol="", instal="", promise="", mat=False, area=None, pag=""),
 ]
@@ -1004,7 +1107,9 @@ crow("Condicao de pagamento declarada", [o["pag"] for o in OPT], textrow=True, k
      note="ATENCAO: 18x SEM JUROS pelo valor a vista (SunWash micro) e vantagem real. Ja o financiamento Sfero em 72x custa cerca de R$ 17,8 mil de juros sobre R$ 18,7 mil - quase dobra o preco.")
 
 sec("PRECOS")
-crow("Preco BASE informado (R$)", [o["price"] for o in OPT], MONEY, inputs=True, key="price",
+crow("Preco BASE informado (R$)",
+     [(o["price"].replace("{GPRICE}", f"I{_cur[0]+1}") if isinstance(o["price"], str) and o["price"] else o["price"]) for o in OPT],
+     MONEY, inputs=True, key="price",
      note="A, B e E: valor do KIT/material. As demais: projeto completo, ja com instalacao - por isso as linhas de homologacao e instalacao ficam zeradas nelas.")
 crow("Acrescimo regional a confirmar (R$)", [o["extra"] for o in OPT], MONEY, inputs=True, key="extra",
      note="ALERTA: a SunWash citou +R$ 1.800 pela sua regiao no kit Intelbras e nao repetiu nos demais. Mantido por PRUDENCIA. Se nao incidir, zere e o payback melhora.")
@@ -1086,7 +1191,8 @@ crow("LIMITE REAL de expansao (canais e estrutura)",
      ["1 modulo (limite de potencia)", "1 modulo (limite de potencia)", "0 - inversor no limite",
       "0 - inversor no limite", "0 - inversor no limite", "0 - inversor sobrecarregado",
       "6 MODULOS - canais livres nos 4 micros Deye", "1 modulo; para 12 precisa de um 3o micro",
-      "5 modulos", "2 a 3 modulos", ""], textrow=True, key="limreal",
+      "5 modulos", "2 a 3 modulos", "4 modulos (canais livres)", "2 modulos (canais livres)", ""],
+     textrow=True, key="limreal",
      note="A linha acima calcula pela POTENCIA do inversor. Em microinversor o limite verdadeiro e o numero de CANAIS livres. Os 4 micros Deye SUN-S225G4-EU-Q0 tem 4 MPPTs cada = 16 canais para 10 modulos, ou seja 6 canais livres: da para ir a 10,4 kWp sem comprar inversor nenhum.")
 crow("Geracao extra possivel sem trocar inversor (kWh/ano)",
      F_("={c}%d*{c}%d/1000*GERACAO!$I$17" % (RW["modextra"], RW["wp"])), NUM0, key="gerextra")
