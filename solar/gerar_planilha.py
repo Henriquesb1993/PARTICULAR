@@ -1015,15 +1015,16 @@ OPT = [
          gserv="12 meses", excl="padrao de entrada, obras civis, telhado, eletrodutos, ART estrutural",
          price=16890.00, extra=0, homol=0, instal=0, promise=9279.13, mat=False, area=30.58,
          pag="a vista, cartao 12x/21x COM juros ou financiamento 36x ate 120x"),
-    dict(L="J) AD BioSolar\nJA Solar 615W x8\nHuawei SUN2000-5KTL-L1", emp="AD BioSolar", nome="Adriano Melo", fone="(11) 97350-3103 / (11) 91408-8892",
-         cnpj="64.313.573/0001-58", doc="Proposta #01225 de 11/08/2026 (val. 26/08)",
-         tipo="INSTALADO (turnkey)", qty=8, wp=615, mod="JA Solar bifacial N-type 132 cel - TIER 1",
-         inv="HUAWEI SUN2000-5KTL-L1 5.000 W (modelo EXATO informado)", ac=5.0, mppt="2 (a confirmar)",
+    dict(L="J) AD BioSolar\nJA Solar 615W x10\nHuawei SUN2000-6KTL-L1", emp="AD BioSolar", nome="Adriano Melo (proposta) / Carlos (negociacao)",
+         fone="(11) 97350-3103 / Carlos (11) 91408-8892",
+         cnpj="64.313.573/0001-58", doc="Proposta #01237 de 12/08/2026 (val. 27/08) - substitui a #01225",
+         tipo="INSTALADO (turnkey)", qty=10, wp=615, mod="JA Solar bifacial N-type 132 cel - TIER 1",
+         inv="HUAWEI SUN2000-6KTL-L1 6.000 W (modelo EXATO informado)", ac=6.0, mppt="2 (a confirmar)",
          volt="220 V (2 fases)", telha="nao informada", gmod="15 anos defeito / 30 anos eficiencia",
          ginv="10 anos", gserv="vistoria tecnica, ART, licencas, gestao de obra e frete inclusos",
          excl="alvenaria, reforco estrutural e alteracoes na rede pedidas pela concessionaria",
-         price=17442.00, extra=0, homol=0, instal=0, promise=6385.01, mat=False, area=25.93,
-         pag="a vista ou financiamento em ate 60x"),
+         price=16200.00, extra=0, homol=0, instal=0, promise=7981.26, mat=False, area=32.41,
+         pag="R$ 16.200 NEGOCIADO (o PDF traz R$ 21.289 - EXIGIR O DESCONTO POR ESCRITO)"),
     dict(L="SIMULACAO G12\nMICRO 12x650W\n4x Deye 2,25 kW", emp="SunWash - SIMULACAO, preco a confirmar",
          nome="Yuri", fone="(16) 99353-4346", cnpj="NAO INFORMADO",
          doc="SIMULACAO: opcao G escalada para 12 modulos", tipo="INSTALADO (turnkey)",
@@ -1167,7 +1168,7 @@ sec("PRECOS")
 crow("Preco BASE informado (R$)",
      [(o["price"].replace("{GPRICE}", f"I{_cur[0]+1}") if isinstance(o["price"], str) and o["price"] else o["price"]) for o in OPT],
      MONEY, inputs=True, key="price",
-     note="A, B e E: valor do KIT/material. As demais: projeto completo, ja com instalacao - por isso as linhas de homologacao e instalacao ficam zeradas nelas.")
+     note="A, B e E: valor do KIT/material. As demais: projeto completo, ja com instalacao. ALERTA na coluna J: o PDF da AD BioSolar traz R$ 21.289,00 e o valor de R$ 16.200,00 foi negociado verbalmente - um desconto de R$ 5.089 (24%) que PRECISA constar em proposta assinada, senao pode evaporar na hora de fechar.")
 crow("Acrescimo regional a confirmar (R$)", [o["extra"] for o in OPT], MONEY, inputs=True, key="extra",
      note="ALERTA: a SunWash citou +R$ 1.800 pela sua regiao no kit Intelbras e nao repetiu nos demais. Mantido por PRUDENCIA. Se nao incidir, zere e o payback melhora.")
 crow("Homologacao / engenharia / ART (R$)", [o["homol"] for o in OPT], MONEY, inputs=True, key="homol",
@@ -1194,7 +1195,7 @@ crow("Geracao media mensal realista (kWh/mes)", F_("={c}%d/12" % RW["ger"]), NUM
 crow("Geracao no cenario CONSERVADOR (PR 72%)", F_("={c}%d/ENTRADAS!$C$31*ENTRADAS!$C$32" % RW["ger"]), NUM0, key="gercons",
      note="Pior caso: telhado mais sujo, mais quente ou com sombra parcial.")
 crow("Geracao PROMETIDA pelo vendedor (kWh/ano)", [o["promise"] for o in OPT], NUM0, inputs=True, key="promise",
-     note="A: 10.554. C, D e G: 700 kWh/mes x 12. E: 6.151. F: 6.367,50. H: 7.329,96. I: 9.279,13. J: 6.385,01. B: nao informada.")
+     note="A: 10.554. C, D e G: 700 kWh/mes x 12. E: 6.151. F: 6.367,50. H: 7.329,96. I: 9.279,13. J: 7.981,26. B: nao informada.")
 crow("DESVIO DA PROMESSA", F_("=IFERROR({c}%d/{c}%d-1,0)" % (RW["ger"], RW["promise"])), PCT, bold=True, fill=BAD_F, key="desvio",
      note="ALERTA: negativo = o vendedor promete mais do que o telhado entrega. Positivo = foi conservador. Sfero e a unica positiva.")
 crow("Geracao se o telhado fosse NORTE (kWh)", F_("={c}%d*GERACAO!$J$17" % RW["kwp"]), NUM0, key="gernorte",
@@ -1591,8 +1592,9 @@ chk = [
     ("T", "PONTOS FORTES: unica que informou o MODELO EXATO do inversor (Huawei SUN2000-5KTL-L1); modulo JA Solar Tier 1 com 30 anos de garantia de eficiencia e 15 de defeito; inversor com 10 anos de garantia; CNPJ na proposta; vistoria tecnica, ART, licencas, gestao de obra e frete no escopo; unica a informar o peso por m2 (8,33 kg/m2), dado que importa em telhado ceramico."),
     ("R", "AGORA DA PARA FECHAR A CONTA QUE ESTAVA ABERTA: baixe a ficha tecnica do Huawei SUN2000-5KTL-L1 e a do modulo JA Solar de 615 W e compare a CORRENTE MAXIMA DE ENTRADA POR MPPT do inversor com a CORRENTE DE OPERACAO (Impp) do modulo. Modulos de 615 W nesse formato tem Impp na faixa de 16 A. Varias versoes da linha SUN2000-L1 aceitam de 12,5 a 13,5 A por MPPT. Se a corrente do modulo for maior que a do MPPT, o inversor NAO consegue extrair toda a potencia nas melhores horas do dia - perda permanente que nenhuma simulacao mostra."),
     ("R", "ESSA MESMA VERIFICACAO VALE PARA AS OPCOES A, B, C, D e I, que usam modulos de 605 a 620 W. Exigir de cada fornecedor o PROJETO DE STRING por escrito: quantos modulos em serie por MPPT, tensao minima e maxima nas temperaturas extremas, e a corrente por MPPT comparada ao limite do inversor. Fornecedor que nao souber responder isso nao fez projeto - fez lista de compras."),
-    ("R", "AD BIOSOLAR: 4,92 kWp COBRE SO 77% DO CENARIO 3, porque dimensionaram com 460 kWh/mes. Pedir a versao com 11 ou 12 modulos. O SUN2000-5KTL-L1 aceita ate cerca de 6,75 kWp (DC/AC 1,35), ou seja, cabem mais 2 a 3 modulos sem trocar inversor - e o preco marginal do modulo e baixo."),
-    ("R", "AD BIOSOLAR E A MAIS CARA POR Wp entre todas as turnkey (R$ 4,05/Wp com o padrao). Equipamento e otimo, mas o sistema e pequeno. Pedir preco para 11 modulos antes de comparar."),
+    ("T", "AD BIOSOLAR CORRIGIU A PROPOSTA (#01237 de 12/08): subiu de 8 para 10 modulos e de 4,92 para 6,15 kWp, trocou o inversor do SUN2000-5KTL-L1 para o 6KTL-L1 de 6 kW, e passou a dimensionar com 650 kWh/mes em vez de 460. Com o valor negociado de R$ 16.200 ela sai a R$ 2,63/Wp - deixou de ser a mais cara e passou a ser uma das mais baratas, com o melhor equipamento do conjunto."),
+    ("R", "O DESCONTO DE R$ 5.089 PRECISA ESTAR NO PAPEL. O PDF #01237 traz R$ 21.289,00; o valor de R$ 16.200,00 veio da negociacao. Sao 24% de desconto. Exigir proposta reemitida com o valor final, ou o desconto pode nao existir na assinatura."),
+    ("R", "VERIFICACAO OBRIGATORIA NA AD BIOSOLAR: 10 modulos JA Solar de 615 W em um SUN2000-6KTL-L1 de 2 MPPTs dao 5 modulos por string. Confirmar na ficha tecnica do inversor a corrente maxima de entrada por MPPT e comparar com o Impp do modulo (~16 A). Se a do inversor for menor, perde-se geracao nas melhores horas. Pedir tambem a tensao da string nas temperaturas extremas."),
     ("R", "NUMEROS DE MARKETING DA AD BIOSOLAR: 'Economia total em 25 anos R$ 419.713,53', 'ROI 24,06 vezes' e 'TIR 35,81%' usam reajuste de energia de 10% ao ano composto por 25 anos. Ignore. Alem disso a 'conta COM sistema de R$ 75,31/mes' vale para 460 kWh/mes SEM o carro - com o BYD o meu modelo da cerca de R$ 259/mes nessa potencia."),
     ("R", "TRES VENDEDORES USARAM TRES CONSUMOS DIFERENTES: William usou 381 kWh/mes (a media real da conta), AD BioSolar usou 460 e Sfero usou 600. Nenhum deles explicou de onde veio o numero. Padronize: mande para TODOS o mesmo dado - 381 kWh/mes de historico MAIS 206 kWh/mes do BYD - e peca que refacam. So assim os orcamentos ficam comparaveis."),
     ("", ""),
