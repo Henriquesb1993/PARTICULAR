@@ -443,6 +443,55 @@ for t in obs:
     c.font = SUB if t.endswith(":") else (RED if t.startswith(("2.", "3.", "4.")) else BLACK)
     r += 1
 
+ws.cell(row=76, column=2, value="ANALISE FORENSE: JA EXISTE CARGA NOVA NA CONTA? (o medidor nao separa o carro, mas o padrao diario denuncia)").font = SUB
+for c in range(2, 6):
+    ws.cell(row=76, column=c).fill = BAND
+fo = [
+    (77, "Media diaria dos 10 meses estaveis (Jul/25 a Abr/26)", "=AVERAGE(E6:E15)", NUM2, "kWh/dia", "Periodo em que o consumo diario ficou entre 10,0 e 12,3"),
+    (78, "Media diaria dos 3 ultimos meses (Mai a Jul/26)", "=AVERAGE(E16:E18)", NUM2, "kWh/dia", "Periodo apos o degrau"),
+    (79, "DEGRAU DETECTADO", "=C78-C77", NUM2, "kWh/dia", "Carga nova que apareceu por volta de maio de 2026"),
+    (80, "DEGRAU EM BASE MENSAL", "=C79*30.4", NUM0, "kWh/mes", "E este o valor que provavelmente e o carro - ou uma carga nova qualquer"),
+    (81, "Aumento percentual", "=IFERROR(C78/C77-1,0)", PCT, "", ""),
+    (82, "CONTROLE DE SAZONALIDADE - Jul/25", "=E6", NUM2, "kWh/dia", "Julho de 2025 tambem foi inverno, com chuveiro eletrico ligado"),
+    (83, "CONTROLE DE SAZONALIDADE - Jul/26", "=E18", NUM2, "kWh/dia", "Mesmo mes, mesma estacao, um ano depois"),
+    (84, "Diferenca julho contra julho", "=C83-C82", NUM2, "kWh/dia", "ESTE e o numero mais confiavel: compara estacao com estacao"),
+    (85, "Diferenca julho contra julho em base mensal", "=C84*30.4", NUM0, "kWh/mes", "Prova que o aumento NAO e sazonal"),
+    (86, "Energia da rede por km rodado", "=ENTRADAS!C42/100/ENTRADAS!C45", NUM2, "kWh/km", "Consumo do veiculo dividido pela eficiencia de carregamento"),
+    (87, "SE O DEGRAU FOR O BYD, ISSO EQUIVALE A", "=IFERROR(C80/C86,0)", NUM0, "km/mes", "Quilometragem eletrica compativel com o degrau medido"),
+    (88, "  o mesmo em km por dia", "=IFERROR(C87/30.4,0)", NUM0, "km/dia", ""),
+    (89, "Pelo controle julho x julho, equivale a", "=IFERROR(C85/C86,0)", NUM0, "km/mes", "Segunda estimativa, pelo caminho independente"),
+]
+for r, lab, f, fmt, unit, note in fo:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
+    frm(ws, f"C{r}", f, fmt, BOLD if lab.isupper() else BLACK)
+    if lab.isupper():
+        ws[f"C{r}"].fill = WARN_F
+    ws.cell(row=r, column=4, value=unit).font = SMALL
+    ws.cell(row=r, column=5, value=note).font = SMALL
+ws["C80"].fill = BAD_F
+ws["C87"].fill = OK_F
+for i, t in enumerate([
+    "COMO ESTA ANALISE FUNCIONA E PARA QUE SERVE:",
+    "O medidor da Enel registra apenas o TOTAL da casa - nao existe forma de ler na conta quanto foi para o carro.",
+    "Mas o consumo DIARIO (coluna E) revela um degrau claro: ficou entre 10,0 e 12,3 kWh/dia por dez meses seguidos,",
+    "e saltou para 14,5 a 16,4 kWh/dia a partir de maio de 2026. Normalizar por dia e essencial porque os ciclos de",
+    "faturamento variam de 29 a 33 dias - comparar kWh do mes direto induz a erro.",
+    "",
+    "O teste decisivo e julho contra julho: mesma estacao, mesmo uso de chuveiro eletrico, um ano de diferenca.",
+    "Deu +4,2 kWh/dia. Isso praticamente elimina a hipotese de que o aumento seja apenas inverno.",
+    "",
+    "RESSALVAS HONESTAS: (a) nao ha dados de maio e junho de 2025 para comparar esses dois meses ano a ano;",
+    "(b) o degrau pode ser outra carga nova - ar-condicionado, freezer, mais gente em casa - e nao o carro;",
+    "(c) o mes de Nov/25 foi faturado como MED (media estimada), nao leitura real, o que adiciona um pouco de ruido;",
+    "(d) a conversao para quilometragem usa o consumo estimado de 17 kWh/100 km, que ainda nao foi confirmado.",
+    "",
+    "POR ISSO A PERGUNTA IMPORTA TANTO: se o carro JA esta carregando desde maio, o consumo futuro e proximo dos",
+    "468 kWh/mes de hoje e o sistema pode ser MENOR. Se o degrau for outra coisa e o carro ainda vai entrar, o",
+    "consumo sobe para a faixa de 590 a 765 kWh/mes. A diferenca entre os dois casos e de 2 a 3 placas.",
+]):
+    c = ws.cell(row=91 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else (RED if t.startswith(("RESSALVAS", "POR ISSO")) else SMALL)
+
 # =====================================================================
 # GERACAO
 # =====================================================================
@@ -619,6 +668,53 @@ ws["C46"].fill = OK_F
 ws.cell(row=46, column=4, value="R$/ano. Parece pouco hoje porque o Fio B esta em 60%. Em 2029 sera 100% e esse ganho quase dobra.").font = SMALL
 ws.cell(row=47, column=2, value="RECOMENDACAO: programar o carregamento do veiculo para iniciar entre 9h e 10h nos dias em que o carro ficar em casa.").font = BLACK
 ws.cell(row=48, column=2, value="O app do BYD permite agendar horario de carga. Vale a pena usar, e o ganho cresce todo ano com a regra do Fio B.").font = BLACK
+
+ws.cell(row=51, column=2, value="6) QUAL VAI SER O MEU CONSUMO? OS DOIS CAMINHOS POSSIVEIS").font = SUB
+for c in range(2, 9):
+    ws.cell(row=51, column=c).fill = BAND
+ref = [
+    (52, "Base residencial PURA (10 meses estaveis, antes do degrau)", "=CONTA!C77*30.4", NUM0, "kWh/mes"),
+    (53, "Consumo ATUAL medido (ultimos 3 meses, ja com o degrau)", "=CONTA!C78*30.4", NUM0, "kWh/mes"),
+    (54, "Degrau detectado na conta", "=CONTA!C80", NUM0, "kWh/mes"),
+    (55, "Energia da rede por km rodado", "=CONTA!C86", NUM2, "kWh/km"),
+]
+for r, lab, f, fmt, unit in ref:
+    ws.cell(row=r, column=2, value=lab).font = BLACK
+    frm(ws, f"C{r}", f, fmt, GREEN)
+    ws.cell(row=r, column=4, value=unit).font = SMALL
+
+hdr_row(ws, 57, ["Quilometragem do BYD", "km/dia aprox.", "kWh/mes da rede so do carro",
+                 "CASO A: o degrau JA e o carro -> total", "kWp necessario (+10%)",
+                 "CASO B: o carro ainda vai entrar -> total", "kWp necessario (+10%)"], start=2)
+ws.row_dimensions[57].height = 46
+for i, km in enumerate([400, 600, 800, 1000, 1200, 1500]):
+    r = 58 + i
+    inp(ws, f"B{r}", km, NUM0)
+    frm(ws, f"C{r}", f"=B{r}/30.4", NUM0)
+    frm(ws, f"D{r}", f"=B{r}*$C$55", NUM0)
+    frm(ws, f"E{r}", f"=$C$52+D{r}", NUM0)
+    frm(ws, f"F{r}", f"=E{r}*12/GERACAO!$I$17*1.1", NUM2)
+    frm(ws, f"G{r}", f"=$C$53+D{r}", NUM0)
+    frm(ws, f"H{r}", f"=G{r}*12/GERACAO!$I$17*1.1", NUM2)
+    for cc in range(2, 9):
+        ws.cell(row=r, column=cc).border = BOX
+    ws[f"F{r}"].fill = OK_F
+    ws[f"H{r}"].fill = WARN_F
+for i, t in enumerate([
+    "CASO A (coluna E): o degrau de maio/26 JA e o carregamento do carro. Entao a residencia pura consome 352 kWh/mes",
+    "   e o total futuro e 352 + o carro na quilometragem que voce realmente rodar. NAO some o degrau duas vezes.",
+    "CASO B (coluna G): o degrau foi outra carga (ar-condicionado, mais gente em casa) e o carro ainda vai entrar.",
+    "   Entao a base e o consumo atual de 468 kWh/mes e o carro soma por cima.",
+    "",
+    "A linha de 600 km/mes e a que corresponde ao degrau medido na conta. Se for esse o seu caso e o carro ja carrega,",
+    "voce precisa de cerca de 4,9 kWp - e nao dos 6,2 a 6,8 kWp que os orcamentos estao oferecendo.",
+    "Isso vale de 2 a 3 placas de diferenca, ou algo entre R$ 3 mil e R$ 5 mil.",
+    "",
+    "COMO RESOLVER SEM ADIVINHAR: o app do BYD mostra a quilometragem rodada e o consumo em modo eletrico.",
+    "Olhe o total de km do mes e quanto rodou em eletrico. Com esse numero a coluna certa desta tabela aparece sozinha.",
+]):
+    c = ws.cell(row=65 + i, column=2, value=t)
+    c.font = RED if t.startswith(("A linha de 600", "COMO RESOLVER")) else BLACK
 
 # =====================================================================
 # DIMENSIONAMENTO
