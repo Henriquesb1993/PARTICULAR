@@ -267,7 +267,7 @@ line(40, "Modelo do veiculo", "C40", "BYD Song Pro DM-i GL", None, "", "INFORMAD
 line(41, "Capacidade da bateria", "C41", 12.9, NUM2, "kWh", "ESTIMATIVA para o Song Pro DM-i - CONFIRMAR no manual, pois a versao GL pode diferir")
 line(42, "Consumo eletrico do veiculo", "C42", 16.0, NUM2, "kWh/100km", "ESTIMATIVA de uso real do Song Pro em modo eletrico. Faixa plausivel: 14 a 18 conforme trajeto e uso de ar-condicionado")
 line(43, "Distancia percorrida por dia", "C43", 80, NUM0, "km/dia", "INFORMADO pelo cliente")
-line(44, "Dias de carregamento por mes", "C44", 26, NUM0, "dias/mes", "ESTIMATIVA - ajuste se rodar tambem nos fins de semana (ate 30)")
+line(44, "Dias de carregamento por mes", "C44", 30, NUM0, "dias/mes", "INFORMADO pelo cliente: carrega todos os dias")
 line(45, "Eficiencia de carregamento (tomada -> bateria)", "C45", 0.86, PCT, "", "Perdas do carregador AC, do BMS e termicas. Faixa tecnica de 85% a 90%")
 line(46, "Potencia do carregador (kW = POTENCIA)", "C46", 3.3, NUM2, "kW", "ESTIMATIVA: carregador AC embarcado do Song Pro DM-i. CONFIRMAR - define disjuntor e cabo")
 line(47, "Objetivo declarado", "C47", "RODAR TUDO NO ELETRICO", None, "", "INFORMADO pelo cliente. Exige DUAS cargas por dia - ver bloco 7 da aba BYD")
@@ -281,6 +281,14 @@ line(53, "Alternativa: consumo atual medido (com o degrau)", "C53", "=CONTA!C78*
      "468 kWh/mes. Use esta se o degrau for OUTRA carga nova e nao o carro - ver bloco 6 da aba BYD", formula=True)
 line(54, "Custo marginal por modulo adicional (instalado)", "C54", 900.0, MONEY, "R$/modulo",
      "ESTIMATIVA: modulo + estrutura + cabo + mao de obra, SEM inversor. Usado nas colunas de simulacao G12 e G14. PEDIR O VALOR REAL AO YURI")
+
+sect(56, "F) PADRAO REAL DE CARREGAMENTO (informado pelo cliente)")
+line(57, "Reposicao media por carga", "C57", 0.50, PCT, "da bateria", "INFORMADO: recarrega em media 50% da bateria por sessao")
+line(58, "Cargas por dia", "C58", 1, NUM0, "cargas/dia", "INFORMADO: uma carga por dia")
+
+sect(60, "G) COMBUSTIVEL (para comparar eletrico x gasolina)")
+line(61, "Consumo em modo hibrido", "C61", 16.0, NUM2, "km/litro", "ESTIMATIVA para o Song Pro DM-i rodando como hibrido. Faixa plausivel: 15 a 20 km/l")
+line(62, "Preco da gasolina", "C62", 6.20, MONEY, "R$/litro", "ESTIMATIVA. Ajuste para o preco que voce paga")
 
 # =====================================================================
 # CONTA
@@ -596,7 +604,9 @@ for c in range(2, 9):
     ws.cell(row=4, column=c).fill = BAND
 brow(5, "Distancia por dia", "=ENTRADAS!C43", NUM0, "km/dia", "ESTIMATIVA - o dado que mais muda o resultado")
 brow(6, "Consumo eletrico do veiculo", "=ENTRADAS!C42", NUM2, "kWh/100km", "ESTIMATIVA de uso real em modo eletrico")
-brow(7, "Energia na bateria por dia  =  km x kWh/100km / 100", "=C5*C6/100", NUM2, "kWh/dia", "Energia que sai da bateria para rodar")
+brow(7, "Energia na bateria por dia = MENOR entre o que voce roda e o que voce recarrega",
+     "=MIN(C5*C6/100,ENTRADAS!C41*ENTRADAS!C57*ENTRADAS!C58)", NUM2, "kWh/dia",
+     "Roda 80 km = demanda 12,80 kWh/dia. Uma carga de 50% repoe 6,45 kWh/dia. Vale o MENOR: o carro so usa da bateria o que foi reposto")
 brow(8, "Dias de carregamento por mes", "=ENTRADAS!C44", NUM0, "dias/mes", "ESTIMATIVA")
 brow(9, "ENERGIA NECESSARIA PARA O VEICULO POR MES", "=C7*C8", NUM0, "kWh/mes", "Energia UTIL na bateria, ANTES das perdas de carregamento", big=True)
 
@@ -760,6 +770,7 @@ estr = [
     (92, "1 - Uma carga por dia em casa (limite da bateria)", "=C82", "cobre ~60 dos 80 km; o resto na gasolina"),
     (93, "2 - DUAS cargas por dia: 80 km TODO ELETRICO", "=ENTRADAS!C43*ENTRADAS!C42/100/ENTRADAS!C45", "E O SEU OBJETIVO. Exige o carro plugado duas vezes ao dia"),
     (94, "3 - Carga parcial de hoje (o degrau da conta)", "=IFERROR(CONTA!C80/ENTRADAS!C44,0)", "E o que a conta mostra acontecendo hoje: so ~19 km/dia de carga"),
+    (95, "4 - SEU PADRAO REAL: 1 carga/dia repondo 50%, 30 dias", "=C13/ENTRADAS!C44", "E O CENARIO ADOTADO NA PLANILHA. Cobre ~40 dos 80 km/dia; o resto vai na gasolina"),
 ]
 for r, lab, f, note in estr:
     ws.cell(row=r, column=2, value=lab).font = BOLD if r == 93 else BLACK
@@ -773,7 +784,8 @@ for r, lab, f, note in estr:
     for cc in range(2, 8):
         ws.cell(row=r, column=cc).border = BOX
 for cl in ["E", "F", "G"]:
-    ws[f"{cl}93"].fill = OK_F
+    ws[f"{cl}93"].fill = WARN_F
+    ws[f"{cl}95"].fill = OK_F
 
 for i, t in enumerate([
     "O ACHADO MAIS IMPORTANTE DESTE BLOCO:",
@@ -798,6 +810,51 @@ for i, t in enumerate([
 ]):
     c = ws.cell(row=96 + i, column=2, value=t)
     c.font = SUB if t.endswith(":") else (RED if t.startswith(("SE A SUA ROTINA", "CONSEQUENCIA", "OPORTUNIDADE")) else BLACK)
+
+ws.cell(row=120, column=2, value="9) ELETRICO x GASOLINA - VALE A PENA CARREGAR DUAS VEZES POR DIA?").font = SUB
+for c in range(2, 9):
+    ws.cell(row=120, column=c).fill = BAND
+gas = [
+    (121, "Km rodados por mes", "=C5*C8", NUM0, "km/mes", "80 km/dia x 30 dias"),
+    (122, "Km rodados em modo ELETRICO por mes", "=IFERROR(C9/(C6/100),0)", NUM0, "km/mes", "Limitado pela energia reposta nas cargas"),
+    (123, "Km rodados na GASOLINA por mes", "=MAX(0,C121-C122)", NUM0, "km/mes", "O que a bateria nao cobriu"),
+    (124, "Percentual do trajeto em modo eletrico", "=IFERROR(C122/C121,0)", PCT, "", "Com uma carga de 50% por dia fica em torno da metade"),
+    (125, "Litros de gasolina por mes", "=IFERROR(C123/ENTRADAS!C61,0)", NUM2, "litros", "ESTIMATIVA: 16 km/l em modo hibrido"),
+    (126, "CUSTO MENSAL DE GASOLINA", "=C125*ENTRADAS!C62", MONEY, "R$/mes", "ESTIMATIVA. Este custo o sistema solar NAO reduz"),
+    (128, "Energia da rede se carregasse 2x/dia (tudo eletrico)", "=C121*C6/100/ENTRADAS!C45", NUM0, "kWh/mes", "Cobre os 2.400 km no eletrico"),
+    (129, "Energia ADICIONAL necessaria (2x/dia menos 1x/dia)", "=C128-C13", NUM0, "kWh/mes", "Quanto mais a casa consumiria"),
+    (130, "Custo dessa energia adicional COM energia solar", "=C129*ENTRADAS!C25", MONEY, "R$/mes", "Compensada por credito: paga-se apenas o Fio B"),
+    (131, "GANHO LIQUIDO DE CARREGAR 2x/DIA", "=C126-C130", MONEY, "R$/mes", "Gasolina economizada menos a energia extra"),
+    (132, "Ganho anual", "=C131*12", MONEY, "R$/ano", ""),
+    (134, "kWp adicionais para suportar o carregamento 2x/dia", "=IFERROR(C129*12/GERACAO!$I$17,0)", NUM2, "kWp", "Potencia extra que o sistema precisaria ter"),
+    (135, "Modulos de 650 W adicionais", "=IFERROR(ROUNDUP(C134*1000/650,0),0)", NUM0, "modulos", ""),
+    (136, "Custo desses modulos adicionais", "=C135*ENTRADAS!C54", MONEY, "R$", "Ao custo marginal estimado de R$ 900 por modulo"),
+    (137, "PAYBACK DO INCREMENTO, EM MESES", "=IFERROR(C136/C131,0)", NUM2, "meses", "Quanto tempo os modulos extras levam para se pagar SO na gasolina economizada"),
+]
+for r, lab, f, fmt, unit, note in gas:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
+    frm(ws, f"C{r}", f, fmt, BOLD if lab.isupper() else BLACK)
+    if lab.isupper():
+        ws[f"C{r}"].fill = WARN_F
+    ws.cell(row=r, column=4, value=unit).font = SMALL
+    ws.cell(row=r, column=8, value=note).font = SMALL
+ws["C131"].fill = OK_F
+ws["C137"].fill = OK_F
+for i, t in enumerate([
+    "O QUE ESTE BLOCO MOSTRA:",
+    "Carregando uma vez por dia e repondo 50% da bateria, cerca de metade dos seus 2.400 km/mes roda no eletrico",
+    "e a outra metade na gasolina. O sistema solar nao toca nessa metade - combustivel nao entra na compensacao de energia.",
+    "",
+    "Se voce conseguir carregar DUAS vezes por dia, a energia extra da rede custa muito pouco quando ha energia solar",
+    "(paga-se so o Fio B), enquanto a gasolina economizada e um valor grande. O bloco calcula os dois lados e diz",
+    "em quantos MESES os modulos adicionais se pagam apenas com a gasolina que voce deixaria de comprar.",
+    "",
+    "ATENCAO AS ESTIMATIVAS DESTE BLOCO: o consumo de 16 km/l em modo hibrido e o preco de R$ 6,20/litro sao premissas",
+    "minhas, editaveis em ENTRADAS C61 e C62. O resultado e sensivel a elas - confira com o consumo real do seu carro.",
+    "E lembre: carregar 2x/dia exige o carro plugado duas vezes, o que depende da sua rotina, nao do sistema solar.",
+]):
+    c = ws.cell(row=139 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else (RED if t.startswith("ATENCAO") else BLACK)
 
 # =====================================================================
 # DIMENSIONAMENTO
