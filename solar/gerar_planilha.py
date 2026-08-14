@@ -1251,7 +1251,7 @@ crow("LIMITE REAL de expansao (canais e estrutura)",
      ["1 modulo (limite de potencia)", "1 modulo (limite de potencia)", "0 - inversor no limite",
       "0 - inversor no limite", "0 - inversor no limite", "0 - inversor sobrecarregado",
       "2 modulos - so 3 micros = 12 canais", "1 modulo; para 12 precisa de um 3o micro",
-      "5 modulos", "2 a 3 modulos", "0 - os 12 canais ficam cheios", "exige um 4o micro", ""],
+      "5 modulos", "4 modulos - o 6KTL-L1 aceita ate 9.000 Wp", "0 - os 12 canais ficam cheios", "exige um 4o micro", ""],
      textrow=True, key="limreal",
      note="A linha acima calcula pela POTENCIA do inversor. Em microinversor o limite verdadeiro e o numero de CANAIS livres. Os 4 micros Deye SUN-S225G4-EU-Q0 tem 4 MPPTs cada = 16 canais para 10 modulos, ou seja 6 canais livres: da para ir a 10,4 kWp sem comprar inversor nenhum.")
 crow("Geracao extra possivel sem trocar inversor (kWh/ano)",
@@ -1506,6 +1506,88 @@ for i, t in enumerate([
     c = ws.cell(row=79 + i, column=2, value=t)
     c.font = SUB if t.endswith(":") else (RED if t.startswith(("1)", "2)", "3)", "SOBRE")) else BLACK)
 
+ws.cell(row=100, column=2, value="COMPARACAO DIRETA: YURI (R$ 16.780) x AD BIOSOLAR (R$ 16.200) - MESMO ESCOPO?").font = SUB
+for c in range(2, 7):
+    ws.cell(row=100, column=c).fill = BAND
+hdr_row(ws, 101, ["O que esta incluido no preco", "YURI / SunWash", "AD BioSolar", "Comentario"], start=2)
+esc = [
+    ("Preco anunciado", "R$ 16.780,48", "R$ 16.200,00", "Diferenca de apenas R$ 580 - mas nao sao a mesma coisa"),
+    ("Natureza do preco", "MATERIAL (pedido Route 66)", "TURNKEY (projeto completo)", "O pedido do Yuri esta no CPF do cliente, nao no da empresa"),
+    ("Modulos e inversor", "SIM", "SIM", "10x ZNShine 650 W + 3 micros Deye  x  10x JA Solar 615 W + Huawei 6 kW"),
+    ("Estrutura de telhado", "SIM", "SIM", "Ambos para telha colonial"),
+    ("Cabo CA, disjuntor, DPS, quadro", "NAO", "SIM (montagem eletrica)", "Ausentes no pedido Route 66"),
+    ("Aterramento", "NAO", "SIM (montagem eletrica)", ""),
+    ("Vistoria tecnica", "NAO", "SIM", ""),
+    ("Projeto eletrico", "NAO", "SIM", ""),
+    ("ART do projeto e da instalacao", "NAO", "SIM", "Sem ART nao ha homologacao"),
+    ("Homologacao junto a Enel", "NAO", "SIM", ""),
+    ("Instalacao e montagem", "NAO", "SIM", ""),
+    ("Gestao e fiscalizacao de obra", "NAO", "SIM", ""),
+    ("Frete ate a residencia", "NAO - retirada em Jundiai", "SIM", "Jundiai fica a ~60 km do Tucuruvi"),
+    ("Documentacao do projeto", "NAO", "SIM", ""),
+    ("Padrao de entrada mono -> bifasico", "NAO", "NAO", "OS DOIS EXCLUEM. Somar cerca de R$ 2.500 nos dois casos"),
+]
+r = 102
+for lab, a, b, obs in esc:
+    ws.cell(row=r, column=2, value=lab).font = BLACK
+    for j, v in enumerate([a, b]):
+        c = ws.cell(row=r, column=3 + j, value=v)
+        c.alignment = Alignment(horizontal="center")
+        if v == "NAO" or v.startswith("NAO -"):
+            c.font = RED
+            c.fill = BAD_F
+        elif v.startswith("SIM"):
+            c.font = BLACK
+            c.fill = OK_F
+        else:
+            c.font = BOLD
+    co = ws.cell(row=r, column=5, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 6):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+
+ws.cell(row=118, column=2, value="CUSTO DE MATERIAL DA AD BIOSOLAR A PRECO DE VAREJO (para testar se R$ 16.200 fecha)").font = SUB
+mat = [
+    (119, "Modulo JA Solar JAM66-D45-615LB 615 W bifacial N-type", 10, 800.0, "ESTIMATIVA de varejo. Modulo vidro-vidro premium"),
+    (120, "Inversor Huawei SUN2000-6KTL-L1 6 kW", 1, 3851.19, "PRECO REAL de varejo no PIX (Meu Gerador, ago/2026)"),
+    (121, "Estrutura telha colonial + perfis para 10 modulos", 1, 2650.0, "ESTIMATIVA, mesma base do pedido Route 66"),
+    (122, "Cabos CC e CA, MC4, string box, DPS e disjuntor", 1, 1200.0, "ESTIMATIVA"),
+]
+for rr, lab, qt, pu, obs in mat:
+    ws.cell(row=rr, column=2, value=lab).font = BLACK
+    ws.cell(row=rr, column=3, value=qt).font = BLACK
+    inp(ws, f"D{rr}", pu, MONEY)
+    frm(ws, f"E{rr}", f"=C{rr}*D{rr}", MONEY)
+    ws.cell(row=rr, column=6, value=obs).font = SMALL
+ws.cell(row=123, column=2, value="MATERIAL A PRECO DE VAREJO").font = BOLD
+frm(ws, "E123", "=SUM(E119:E122)", MONEY, BOLD)
+ws["E123"].fill = WARN_F
+ws.cell(row=124, column=2, value="Desconto tipico de distribuidor sobre o varejo").font = BLACK
+inp(ws, "D124", 0.20, PCT)
+ws.cell(row=125, column=2, value="MATERIAL AO CUSTO PROVAVEL DA EMPRESA").font = BOLD
+frm(ws, "E125", "=E123*(1-D124)", MONEY, BOLD)
+ws.cell(row=126, column=2, value="Preco de venda da AD BioSolar").font = BLACK
+inp(ws, "E126", 16200.0, MONEY)
+ws.cell(row=127, column=2, value="SOBRA PARA SERVICOS (projeto, ART, instalacao, homologacao, frete)").font = BOLD
+frm(ws, "E127", "=E126-E125", MONEY, BOLD)
+ws["E127"].fill = OK_F
+
+for i, t in enumerate([
+    "LEITURA DESTE TESTE:",
+    "Se a AD BioSolar comprasse no varejo, o material sozinho custaria mais que o preco de venda dela - o negocio nao fecharia.",
+    "Comprando com desconto tipico de distribuidor (20%), sobra algo em torno de R$ 3.500 para cobrir vistoria, projeto, ART,",
+    "instalacao de 10 modulos, homologacao, gestao de obra e frete. E APERTADO, MAS POSSIVEL para uma operacao enxuta.",
+    "Conclusao: os R$ 16.200 sao agressivos e plausiveis - nao sao impossiveis. Mas justamente por serem apertados, exija o",
+    "escopo por escrito e pergunte se a equipe de instalacao e propria ou terceirizada.",
+    "",
+    "E O PONTO PRINCIPAL DA COMPARACAO: por R$ 580 A MENOS que o Yuri, a AD BioSolar entrega o mesmo material MAIS",
+    "projeto, ART, instalacao, homologacao, frete e montagem eletrica completa. Nao e uma disputa de preco - e de escopo.",
+]):
+    c = ws.cell(row=129 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else (RED if t.startswith("E O PONTO") else BLACK)
+
 # =====================================================================
 # ECONOMIA
 # =====================================================================
@@ -1700,7 +1782,10 @@ chk = [
     ("R", "ESSA MESMA VERIFICACAO VALE PARA AS OPCOES A, B, C, D e I, que usam modulos de 605 a 620 W. Exigir de cada fornecedor o PROJETO DE STRING por escrito: quantos modulos em serie por MPPT, tensao minima e maxima nas temperaturas extremas, e a corrente por MPPT comparada ao limite do inversor. Fornecedor que nao souber responder isso nao fez projeto - fez lista de compras."),
     ("T", "AD BIOSOLAR CORRIGIU A PROPOSTA (#01237 de 12/08): subiu de 8 para 10 modulos e de 4,92 para 6,15 kWp, trocou o inversor do SUN2000-5KTL-L1 para o 6KTL-L1 de 6 kW, e passou a dimensionar com 650 kWh/mes em vez de 460. Com o valor negociado de R$ 16.200 ela sai a R$ 2,63/Wp - deixou de ser a mais cara e passou a ser uma das mais baratas, com o melhor equipamento do conjunto."),
     ("R", "O DESCONTO DE R$ 5.089 PRECISA ESTAR NO PAPEL. O PDF #01237 traz R$ 21.289,00; o valor de R$ 16.200,00 veio da negociacao. Sao 24% de desconto. Exigir proposta reemitida com o valor final, ou o desconto pode nao existir na assinatura."),
-    ("R", "VERIFICACAO OBRIGATORIA NA AD BIOSOLAR: 10 modulos JA Solar de 615 W em um SUN2000-6KTL-L1 de 2 MPPTs dao 5 modulos por string. Confirmar na ficha tecnica do inversor a corrente maxima de entrada por MPPT e comparar com o Impp do modulo (~16 A). Se a do inversor for menor, perde-se geracao nas melhores horas. Pedir tambem a tensao da string nas temperaturas extremas."),
+    ("R", "CONFIRMADO POR FICHA TECNICA - INCOMPATIBILIDADE DE CORRENTE NA AD BIOSOLAR: o Huawei SUN2000-6KTL-L1 aceita no maximo 13,5 A por MPPT. O modulo JA Solar JAM66-D45-615LB tem Impp de 15,39 A e Isc de 16,1 A. A corrente do modulo excede a do inversor em cerca de 14%. Nao e problema de seguranca (o Isc cabe), mas o inversor nao consegue extrair toda a corrente nos momentos de maior irradiancia."),
+    ("T", "DIMENSAO REAL DESSA PERDA: o limite so passa a atuar quando a irradiancia no plano dos modulos ultrapassa cerca de 88% de 1.000 W/m2. No seu telhado Sudeste isso acontece em poucas horas do ano, entao a perda anual de energia deve ficar entre 1% e 3% - incomoda, mas nao inviabiliza. O que ela revela e mais grave que o numero: NINGUEM FEZ PROJETO DE STRING. Um projetista teria visto isso na primeira conferencia."),
+    ("R", "O QUE COBRAR DA AD BIOSOLAR: peca que expliquem essa diferenca e apresentem uma das saidas - (a) trocar por modulo de 144 meias-celulas com Impp em torno de 13,7 A, que casa com o inversor; (b) trocar o inversor por um modelo com corrente maior por MPPT; ou (c) assumir por escrito a perda estimada. Bonus: o 6KTL-L1 aceita ate 9.000 Wp, ou seja, ainda cabem 4 modulos de 615 W para expansao futura."),
+    ("R", "ESSA MESMA CONTA VALE PARA AS OPCOES A e B (TecSolarSP, Huawei 6 kW com modulos de 615 e 605 W) e provavelmente para C, D e I. NAO se aplica a proposta do Yuri: o micro Deye SUN-M225G4-EU-Q0 aceita 18 A por MPPT e modulos de ate 790 W, com folga sobre os 15,39 A."),
     ("R", "NUMEROS DE MARKETING DA AD BIOSOLAR: 'Economia total em 25 anos R$ 419.713,53', 'ROI 24,06 vezes' e 'TIR 35,81%' usam reajuste de energia de 10% ao ano composto por 25 anos. Ignore. Alem disso a 'conta COM sistema de R$ 75,31/mes' vale para 460 kWh/mes SEM o carro - com o BYD o meu modelo da cerca de R$ 259/mes nessa potencia."),
     ("R", "TRES VENDEDORES USARAM TRES CONSUMOS DIFERENTES: William usou 381 kWh/mes (a media real da conta), AD BioSolar usou 460 e Sfero usou 600. Nenhum deles explicou de onde veio o numero. Padronize: mande para TODOS o mesmo dado - 381 kWh/mes de historico MAIS 206 kWh/mes do BYD - e peca que refacam. So assim os orcamentos ficam comparaveis."),
     ("", ""),
