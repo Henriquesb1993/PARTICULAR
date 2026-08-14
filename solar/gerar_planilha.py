@@ -987,17 +987,16 @@ OPT = [
          excl="padrao de entrada, obras civis, telhado, eletrodutos, ART estrutural",
          price=12387.64, extra=0, homol=0, instal=0, promise=6367.50, mat=False, area=21.12,
          pag="a vista, cartao 12x/21x COM juros ou financiamento 36x"),
-    dict(L="G) SunWash\nMICRO 10x650W\n4x 2,25 kW", emp="SunWash Energia Solar e Ar-Condicionado", nome="Yuri", fone="(16) 99353-4346",
-         cnpj="NAO INFORMADO", doc="Proposta 6695731 de 12/08/2026 - VALIDADE 17/08 (5 dias)", tipo="INSTALADO (turnkey)",
-         qty=10, wp=650, mod="ZNShine 650W qt.10 (pag.5) x RISEN 660W qt.16 (tabela) - CONTRADICAO", inv="4x DEYE SUN-S225G4-EU-Q0 2,25 kW = 9,0 kW AC",
-         ac=9.0, mppt="4 por micro = 16 canais (10 usados, 6 livres)", volt="220 V (a confirmar)",
-         telha="estrutura apropriada ao telhado (tipo nao especificado)",
-         gmod="12 anos defeito / 25 anos eficiencia",
-         ginv="12 anos",
+    dict(L="G) SunWash\nMICRO 10x650W\n3x Deye 2,25 kW", emp="SunWash Energia Solar e Ar-Condicionado", nome="Yuri", fone="(16) 99353-4346",
+         cnpj="NAO INFORMADO", doc="Proposta 6695731 + PEDIDO Route 66 no 7123382 (val. 15/08)", tipo="MATERIAL? A ESCLARECER",
+         qty=10, wp=650, mod="ZNShine ZXNR-MD132-650 (confirmado no pedido Route 66)", inv="3x DEYE SUN-S225G4-EU-Q0 2,25 kW = 6,75 kW AC",
+         ac=6.75, mppt="4 por micro = 12 canais (10 usados, 2 livres)", volt="220 V (a confirmar)",
+         telha="COLONIAL (confirmado: estrutura p/ telha colonial no pedido)",
+         gmod="proposta diz 12/25 anos; PEDIDO diz 15 anos",
+         ginv="proposta diz 12 anos; PEDIDO diz 1 ANO",
          gserv="vistoria, projeto eletrico, ART, licencas, gestao de obra, frete e documentacao",
          excl="alvenaria, reforco estrutural e alteracoes na rede pedidas pela concessionaria",
-         price=16780.54, extra=1800, homol=0, instal=0, promise=8400, mat=False, area=25.0,
-         padrao_incluso=True,
+         price=16780.48, extra=0, homol=790, instal="=6900/10*{QTY}", promise=8400, mat=True, area=25.0,
          pag="18x de R$ 932,25 SEM JUROS (= preco a vista)"),
     dict(L="H) Sfero (Renato)\nLongi/DAH 590W\n2x micro 2,5 kW", emp="Sfero", nome="nao informado (indicacao do Renato)", fone="(11) 99705-1311 (Renato)",
          cnpj="NAO INFORMADO na proposta", doc="Proposta 0664/2026 de 11/08/2026 (val. 10 dias)",
@@ -1031,21 +1030,21 @@ OPT = [
          nome="Yuri", fone="(16) 99353-4346", cnpj="NAO INFORMADO",
          doc="SIMULACAO: opcao G escalada para 12 modulos", tipo="INSTALADO (turnkey)",
          qty=12, wp=650, mod="ZNShine ZXNR-MD132-650 N-type (Tier 1 BNEF)",
-         inv="4x DEYE SUN-S225G4-EU-Q0 = 9,0 kW AC (12 dos 16 canais)", ac=9.0,
-         mppt="4 por micro = 16 canais (12 usados, 4 livres)", volt="220 V (a confirmar)",
+         inv="3x DEYE SUN-S225G4-EU-Q0 = 6,75 kW AC (12 dos 12 canais)", ac=6.75,
+         mppt="4 por micro = 12 canais (12 usados, 0 livres)", volt="220 V (a confirmar)",
          telha="nao informada", gmod="exigir por escrito", ginv="exigir por escrito (Deye pratica 10 anos)",
          gserv="exigir por escrito", excl="exigir por escrito",
-         price="={GPRICE}+2*ENTRADAS!$C$54", extra=1800, homol=0, instal=0, promise=0, mat=False, area=None, padrao_incluso=True,
+         price="={GPRICE}+2*ENTRADAS!$C$54", extra=0, homol=790, instal="=6900/10*{QTY}", promise=0, mat=True, area=None,
          pag="pedir preco e parcelamento para esta configuracao"),
     dict(L="SIMULACAO G14\nMICRO 14x650W\n4x Deye 2,25 kW", emp="SunWash - SIMULACAO, preco a confirmar",
          nome="Yuri", fone="(16) 99353-4346", cnpj="NAO INFORMADO",
          doc="SIMULACAO: opcao G escalada para 14 modulos", tipo="INSTALADO (turnkey)",
          qty=14, wp=650, mod="ZNShine ZXNR-MD132-650 N-type (Tier 1 BNEF)",
-         inv="4x DEYE SUN-S225G4-EU-Q0 = 9,0 kW AC (14 dos 16 canais)", ac=9.0,
+         inv="4x DEYE SUN-S225G4-EU-Q0 = 9,0 kW AC (exige o 4o micro)", ac=9.0,
          mppt="4 por micro = 16 canais (14 usados, 2 livres)", volt="220 V (a confirmar)",
          telha="nao informada", gmod="exigir por escrito", ginv="exigir por escrito (Deye pratica 10 anos)",
          gserv="exigir por escrito", excl="exigir por escrito",
-         price="={GPRICE}+4*ENTRADAS!$C$54", extra=1800, homol=0, instal=0, promise=0, mat=False, area=None, padrao_incluso=True,
+         price="={GPRICE}+4*ENTRADAS!$C$54", extra=0, homol=790, instal="=6900/10*{QTY}", promise=0, mat=True, area=None,
          pag="pedir preco e parcelamento para esta configuracao"),
     dict(L="M) Bruno G4\n(a receber)", emp="G4 (razao social a confirmar)", nome="Bruno", fone="(11) 96861-7830", cnpj="", doc="Nada recebido",
          tipo="?", qty="", wp="", mod="", inv="", ac="", mppt="", volt="", telha="", gmod="", ginv="",
@@ -1181,7 +1180,7 @@ crow("Instalacao / mao de obra (R$)",
      note="ALERTA: E = R$ 6.900 declarado pelo William para 10 modulos. A e B usam esse valor escalado por modulo, como ESTIMATIVA.")
 crow("Adequacao do padrao mono -> bifasico (R$)",
      [(0 if o.get("padrao_incluso") else (f"=ENTRADAS!$C$28" if o["qty"] != "" else "")) for o in OPT], MONEY, key="padrao",
-     note="ALERTA: so a proposta do Yuri (colunas G, e as simulacoes) lista 'PADRAO DE ENTRADA' e 'TROCA DE DISJUNTOR DO PADRAO' como inclusos - por isso zero nelas. MAS a pagina 8 da mesma proposta diz que a adequacao de entrada e responsabilidade do cliente. CONTRADICAO A RESOLVER POR ESCRITO: vale R$ 2.500.")
+     note="ALERTA: nenhum orcamento comprova a inclusao. A proposta do Yuri lista 'PADRAO DE ENTRADA' na pagina 5, mas a pagina 8 atribui a adequacao ao cliente E o pedido Route 66 nao traz nenhum material de padrao. Voltou a ser somado a todos.")
 crow("PRECO TOTAL INSTALADO (R$)", F_("=SUM({c}%d:{c}%d)" % (RW["price"], RW["padrao"])), MONEY, bold=True, fill=WARN_F, key="total",
      note="O UNICO numero comparavel entre fornecedores.")
 crow("R$ por Wp instalado", F_("=IFERROR({c}%d/({c}%d*1000),0)" % (RW["total"], RW["kwp"])), WP, bold=True, key="wpinst",
@@ -1251,8 +1250,8 @@ crow("Modulos que ainda cabem no inversor",
 crow("LIMITE REAL de expansao (canais e estrutura)",
      ["1 modulo (limite de potencia)", "1 modulo (limite de potencia)", "0 - inversor no limite",
       "0 - inversor no limite", "0 - inversor no limite", "0 - inversor sobrecarregado",
-      "6 MODULOS - canais livres nos 4 micros Deye", "1 modulo; para 12 precisa de um 3o micro",
-      "5 modulos", "2 a 3 modulos", "4 modulos (canais livres)", "2 modulos (canais livres)", ""],
+      "2 modulos - so 3 micros = 12 canais", "1 modulo; para 12 precisa de um 3o micro",
+      "5 modulos", "2 a 3 modulos", "0 - os 12 canais ficam cheios", "exige um 4o micro", ""],
      textrow=True, key="limreal",
      note="A linha acima calcula pela POTENCIA do inversor. Em microinversor o limite verdadeiro e o numero de CANAIS livres. Os 4 micros Deye SUN-S225G4-EU-Q0 tem 4 MPPTs cada = 16 canais para 10 modulos, ou seja 6 canais livres: da para ir a 10,4 kWp sem comprar inversor nenhum.")
 crow("Geracao extra possivel sem trocar inversor (kWh/ano)",
@@ -1402,6 +1401,110 @@ ws.cell(row=rr, column=2, value="Anos para a geracao extra pagar a diferenca").f
 frm(ws, f"C{rr}", f"=IFERROR(C{rr-3}/C{rr-1},0)", NUM2, BOLD)
 ws[f"C{rr}"].fill = WARN_F
 ws.cell(row=rr, column=4, value="Se der acima de ~6 anos, a diferenca NAO se paga pela geracao: decida por marca, garantia e completude do kit (a opcao A tem aterramento completo, a B nao).").font = SMALL
+
+ws.cell(row=46, column=2, value="PEDIDO ROUTE 66 No 7123382 - CONFERENCIA DA LISTA E COTACAO DE MERCADO").font = SUB
+for c in range(2, 7):
+    ws.cell(row=46, column=c).fill = BAND
+ws.cell(row=47, column=2, value="Emitido 12/08/2026, valido ate 15/08/2026. Cliente do pedido: HENRIQUE DOS SANTOS PEITE (CPF proprio). Cond. pag. C18. Deposito Jundiai.").font = SMALL
+hdr_row(ws, 48, ["Item do pedido", "Qtd", "Preco unit. de mercado (R$)", "Total (R$)", "Observacao tecnica"], start=2)
+ws.row_dimensions[48].height = 32
+itens = [
+    ("Painel ZNShine ZXNR-MD132-650 N-type 650 W", 10, 740.0,
+     "Referencia: painel 650 W bifacial em varejo a R$ 739 no PIX (Minha Casa Solar). ZNShine tende a ficar na mesma faixa"),
+    ("Microinversor Deye SUN-M225G4-EU-Q0 2,25 kW 4 MPPT", 3, 1121.17,
+     "PRECO REAL de varejo no PIX (Minha Casa Solar, ago/2026). Aceita 18 A por MPPT e modulos de ate 790 W"),
+    ("Estrutura p/ telha colonial s/ perfil - 4 placas", 3, 450.0,
+     "ESTIMATIVA. Kits completos de 4 placas com barras saem por ~R$ 1.000; a versao SEM perfil e bem mais barata"),
+    ("Perfil aluminio 2400 mm - 1 par", 5, 260.0,
+     "ESTIMATIVA por par, com base em kits de 4 perfis de 2,4 m"),
+    ("Conector MC4 par macho/femea STAUBLI", 20, 32.0,
+     "ESTIMATIVA. Staubli original custa mais que generico"),
+    ("Parafuso T cabeca de martelo M8 x 40 A2", 6, 5.0, "ESTIMATIVA"),
+    ("Porca sextavada DIN 934", 6, 2.0, "ESTIMATIVA"),
+    ("Arruela de pressao", 6, 1.5, "ESTIMATIVA"),
+    ("Placa de advertencia geracao solar", 3, 0.0, "Cortesia da Route 66"),
+]
+r = 49
+for nome, qt, pu, obs in itens:
+    ws.cell(row=r, column=2, value=nome).font = BLACK
+    ws.cell(row=r, column=3, value=qt).font = BLACK
+    inp(ws, f"D{r}", pu, MONEY)
+    frm(ws, f"E{r}", f"=C{r}*D{r}", MONEY)
+    co = ws.cell(row=r, column=6, value=obs)
+    co.font = SMALL if obs.startswith(("Referencia", "PRECO REAL", "Cortesia")) else REDS
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 7):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+ws.cell(row=58, column=2, value="TOTAL COTADO A PRECO DE VAREJO").font = BOLD
+frm(ws, "E58", "=SUM(E49:E57)", MONEY, BOLD)
+ws["E58"].fill = WARN_F
+ws.cell(row=59, column=2, value="TOTAL COBRADO NO PEDIDO ROUTE 66").font = BOLD
+inp(ws, "E59", 16780.48, MONEY)
+ws.cell(row=60, column=2, value="DIFERENCA (pedido - varejo)").font = BOLD
+frm(ws, "E60", "=E59-E58", MONEY, BOLD)
+ws["E60"].fill = BAD_F
+ws.cell(row=61, column=2, value="Diferenca em percentual").font = BLACK
+frm(ws, "E61", "=IFERROR(E59/E58-1,0)", PCT)
+ws.cell(row=62, column=2, value="Custo do material por Wp (pedido Route 66)").font = BOLD
+frm(ws, "E62", "=IFERROR(E59/(10*650),0)", WP, BOLD)
+ws.cell(row=63, column=2, value="Custo do material por Wp (cotacao de varejo)").font = BLACK
+frm(ws, "E63", "=IFERROR(E58/(10*650),0)", WP)
+
+ws.cell(row=65, column=2, value="O QUE FALTA NA LISTA - conferencia item a item").font = SUB
+for c in range(2, 7):
+    ws.cell(row=65, column=c).fill = BAND
+falta = [
+    ("Cabo CA dos microinversores ate o quadro", "AUSENTE", "Microinversor precisa de cabo tronco ou cabo CA dimensionado. Sem ele o sistema nao liga"),
+    ("Disjuntor CA dedicado do sistema", "AUSENTE", "Obrigatorio pela NBR 5410. A proposta prometia 'TROCA DE DISJUNTOR DO PADRAO' e nao ha disjuntor nenhum"),
+    ("DPS - dispositivo de protecao contra surtos (CA)", "AUSENTE", "Obrigatorio. A proposta diz 'PROTECOES INCLUSAS'"),
+    ("Quadro / caixa de protecao CA", "AUSENTE", "Onde entram disjuntor e DPS"),
+    ("Cabo e material de aterramento / equipotencializacao", "AUSENTE", "Item de seguranca. Molduras e estrutura precisam ser aterradas"),
+    ("Conectores de tronco e tampas de terminacao dos micros", "AUSENTE", "Especificos da Deye. Sem eles nao se interliga os microinversores"),
+    ("Material do padrao de entrada (mono -> bifasico)", "AUSENTE", "A proposta pagina 5 dizia incluir 'PADRAO DE ENTRADA'. Nao ha nada disso no pedido"),
+    ("Eletroduto, eletrocalha e acessorios", "AUSENTE", "Infraestrutura de passagem dos cabos"),
+    ("Estrutura para telha colonial", "PRESENTE", "3 kits para 4 placas = ate 12 placas. CONFIRMA que o telhado e colonial"),
+    ("Perfis de aluminio", "PRESENTE", "5 pares de 2,4 m = 24 m de trilho. Adequado para 10 modulos, sem folga"),
+    ("Conectores MC4", "PRESENTE", "20 pares para 10 modulos - correto"),
+    ("Paineis e microinversores", "PRESENTE", "10 paineis e 3 micros"),
+]
+r = 66
+for item, st, obs in falta:
+    ws.cell(row=r, column=2, value=item).font = BLACK
+    c = ws.cell(row=r, column=3, value=st)
+    c.font = RED if st == "AUSENTE" else BLACK
+    c.fill = BAD_F if st == "AUSENTE" else OK_F
+    c.alignment = Alignment(horizontal="center")
+    co = ws.cell(row=r, column=4, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 7):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+
+for i, t in enumerate([
+    "AS TRES CONCLUSOES DESTA CONFERENCIA:",
+    "1) O PEDIDO TEM 3 MICROINVERSORES, A PROPOSTA DIZ 4. Com 3 micros sao 6,75 kW AC e 12 canais (10 usados, 2 livres),",
+    "   e nao 9,0 kW com 16 canais. Isso nao e erro tecnico - a relacao DC/AC fica em 0,96, que e melhor que 0,72,",
+    "   e a potencia a homologar cai de 41 A para 31 A. MAS a folga de expansao cai de 6 modulos para 2, e o preco",
+    "   deveria ser menor que o de 4 micros. Descubra qual e o certo.",
+    "",
+    "2) FALTAM TODOS OS ITENS ELETRICOS. Nao ha cabo CA, disjuntor, DPS, quadro, aterramento nem material de padrao.",
+    "   A proposta vende 'ESTRUTURA, PROTECOES, CABOS E HOMOLOGACAO INCLUSOS' - e o pedido tem estrutura, mas",
+    "   protecoes e cabos NAO. Ou esse material vem por fora, ou o escopo prometido nao sera entregue.",
+    "",
+    "3) O VALOR DO PEDIDO E PRATICAMENTE IGUAL AO DA PROPOSTA: R$ 16.780,48 contra R$ 16.780,54, seis centavos de",
+    "   diferenca. Ou seja, o que o Yuri chamou de 'PROJETO COMPLETO' e, na verdade, o custo do MATERIAL - e o pedido",
+    "   ainda esta no SEU CPF, com entrega em deposito de Jundiai. Mao de obra, engenharia, homologacao e padrao de",
+    "   entrada nao cabem dentro desse numero. E preciso perguntar quanto custa a instalacao, separadamente.",
+    "",
+    "SOBRE A COTACAO DE VAREJO ACIMA: os precos sao de lojas online de agosto/2026 (fontes citadas na coluna F).",
+    "O microinversor Deye tem preco REAL confirmado; os demais sao estimativas. Uma ressalva importante e justa:",
+    "a condicao C18 (18 vezes no cartao) costuma embutir de 10% a 18% de custo financeiro, entao o preco A VISTA",
+    "deste mesmo pedido deve ser sensivelmente menor. PECA O PRECO A VISTA (PIX) ANTES DE COMPARAR.",
+]):
+    c = ws.cell(row=79 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else (RED if t.startswith(("1)", "2)", "3)", "SOBRE")) else BLACK)
 
 # =====================================================================
 # ECONOMIA
