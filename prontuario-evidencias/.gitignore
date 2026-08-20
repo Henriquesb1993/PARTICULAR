@@ -1,0 +1,6 @@
+# Não versionar material com dados pessoais (LGPD) nem artefatos gerados
+shots/
+*.pptx
+*.pdf
+node_modules/
+qa/
