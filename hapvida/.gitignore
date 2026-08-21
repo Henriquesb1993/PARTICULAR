@@ -1,3 +1,5 @@
 # Dados pessoais de beneficiários — não versionar
 dados/*.csv
+dados/*.xlsx
 *.xlsx
+__pycache__/
