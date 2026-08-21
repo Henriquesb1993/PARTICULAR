@@ -1,0 +1,3 @@
+# Dados pessoais de beneficiários — não versionar
+dados/*.csv
+*.xlsx
