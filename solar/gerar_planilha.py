@@ -5,12 +5,13 @@ Planilha comparativa de orcamentos fotovoltaicos - Henrique dos Santos Peite
 UC Enel SP 0118487990 / 100242856108 | B1 residencial MONOFASICO
 Telhado declarado Sudeste 20 graus | BYD hibrido a ser carregado em casa
 """
+import os
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.comments import Comment
 
-OUT = "/home/user/PARTICULAR/solar/Comparativo_Orcamentos_Solar_Henrique.xlsx"
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Comparativo_Orcamentos_Solar_Henrique.xlsx")
 
 F = "Arial"
 BLUE = Font(name=F, size=10, color="0000FF")
@@ -1411,7 +1412,7 @@ ws.row_dimensions[48].height = 32
 itens = [
     ("Painel ZNShine ZXNR-MD132-650 N-type 650 W", 10, 740.0,
      "Referencia: painel 650 W bifacial em varejo a R$ 739 no PIX (Minha Casa Solar). ZNShine tende a ficar na mesma faixa"),
-    ("Microinversor Deye SUN-M225G4-EU-Q0 2,25 kW 4 MPPT", 3, 1121.17,
+    ("Microinversor Deye SUN-S225G4-EU-Q0 2,25 kW 4 MPPT", 3, 1121.17,
      "PRECO REAL de varejo no PIX (Minha Casa Solar, ago/2026). Aceita 18 A por MPPT e modulos de ate 790 W"),
     ("Estrutura p/ telha colonial s/ perfil - 4 placas", 3, 450.0,
      "ESTIMATIVA. Kits completos de 4 placas com barras saem por ~R$ 1.000; a versao SEM perfil e bem mais barata"),
@@ -1785,7 +1786,7 @@ chk = [
     ("R", "CONFIRMADO POR FICHA TECNICA - INCOMPATIBILIDADE DE CORRENTE NA AD BIOSOLAR: o Huawei SUN2000-6KTL-L1 aceita no maximo 13,5 A por MPPT. O modulo JA Solar JAM66-D45-615LB tem Impp de 15,39 A e Isc de 16,1 A. A corrente do modulo excede a do inversor em cerca de 14%. Nao e problema de seguranca (o Isc cabe), mas o inversor nao consegue extrair toda a corrente nos momentos de maior irradiancia."),
     ("T", "DIMENSAO REAL DESSA PERDA: o limite so passa a atuar quando a irradiancia no plano dos modulos ultrapassa cerca de 88% de 1.000 W/m2. No seu telhado Sudeste isso acontece em poucas horas do ano, entao a perda anual de energia deve ficar entre 1% e 3% - incomoda, mas nao inviabiliza. O que ela revela e mais grave que o numero: NINGUEM FEZ PROJETO DE STRING. Um projetista teria visto isso na primeira conferencia."),
     ("R", "O QUE COBRAR DA AD BIOSOLAR: peca que expliquem essa diferenca e apresentem uma das saidas - (a) trocar por modulo de 144 meias-celulas com Impp em torno de 13,7 A, que casa com o inversor; (b) trocar o inversor por um modelo com corrente maior por MPPT; ou (c) assumir por escrito a perda estimada. Bonus: o 6KTL-L1 aceita ate 9.000 Wp, ou seja, ainda cabem 4 modulos de 615 W para expansao futura."),
-    ("R", "ESSA MESMA CONTA VALE PARA AS OPCOES A e B (TecSolarSP, Huawei 6 kW com modulos de 615 e 605 W) e provavelmente para C, D e I. NAO se aplica a proposta do Yuri: o micro Deye SUN-M225G4-EU-Q0 aceita 18 A por MPPT e modulos de ate 790 W, com folga sobre os 15,39 A."),
+    ("R", "ESSA MESMA CONTA VALE PARA AS OPCOES A e B (TecSolarSP, Huawei 6 kW com modulos de 615 e 605 W) e provavelmente para C, D e I. NAO se aplica a proposta do Yuri: o micro Deye SUN-S225G4-EU-Q0 aceita 18 A por MPPT e modulos de ate 790 W, com folga sobre os 15,39 A."),
     ("R", "NUMEROS DE MARKETING DA AD BIOSOLAR: 'Economia total em 25 anos R$ 419.713,53', 'ROI 24,06 vezes' e 'TIR 35,81%' usam reajuste de energia de 10% ao ano composto por 25 anos. Ignore. Alem disso a 'conta COM sistema de R$ 75,31/mes' vale para 460 kWh/mes SEM o carro - com o BYD o meu modelo da cerca de R$ 259/mes nessa potencia."),
     ("R", "TRES VENDEDORES USARAM TRES CONSUMOS DIFERENTES: William usou 381 kWh/mes (a media real da conta), AD BioSolar usou 460 e Sfero usou 600. Nenhum deles explicou de onde veio o numero. Padronize: mande para TODOS o mesmo dado - 381 kWh/mes de historico MAIS 206 kWh/mes do BYD - e peca que refacam. So assim os orcamentos ficam comparaveis."),
     ("", ""),
@@ -1952,6 +1953,567 @@ for lab, why in campos:
     cw.font = SMALL
     cw.alignment = Alignment(wrap_text=True, vertical="top")
     r += 1
+
+
+# =====================================================================
+# RECEBIMENTO - conferencia fisica do material entregue
+# =====================================================================
+ws = sheet("RECEBIMENTO")
+for col, w in [("A", 3), ("B", 46), ("C", 10), ("D", 10), ("E", 16), ("F", 62)]:
+    ws.column_dimensions[col].width = w
+title(ws, "RECEBIMENTO DO MATERIAL - PEDIDO ROUTE 66 No 7123382",
+      "Conferencia fisica feita em 26 e 27/08/2026 pelas fotos das caixas. Amarelo = preencher conforme conferir.")
+
+ws.cell(row=4, column=2, value="1) ITENS DO PEDIDO").font = SUB
+for c in range(2, 7):
+    ws.cell(row=4, column=c).fill = BAND
+hdr_row(ws, 5, ["Item", "Pedido", "Recebido", "Status", "Observacao"], start=2)
+ws.row_dimensions[5].height = 30
+rec = [
+    ("Painel ZNShine ZXNR-MD132-650 650 W", 10, 10, "CONFERIDO",
+     "Confirmado pelo cliente em 27/08. 10 x 650 W = 6,50 kWp - bate com a ART e com o app Deye"),
+    ("Microinversor Deye SUN-S225G4-EU-Q0 2,25 kW", 3, 3, "CONFERIDO",
+     "3 CAIXAS confirmadas. Encerra a divergencia proposta (4) x pedido (3). Anexo 4 da Enel diz 4 e esta ERRADO"),
+    ("Estrutura HS-KIT4P-CER (kit ceramico 4 placas)", 3, 0, "CONFERIR",
+     "Vista 1 caixa na foto. Codigo confirma telha CERAMICA e 4 placas por kit. 3 kits = 12 lugares"),
+    ("Perfil aluminio 2400 mm - 1 par", 5, 0, "CONFERIR",
+     "Volumes LONGOS, embalagem separada. O kit e S/PERFIL - os trilhos vem a parte"),
+    ("Conector MC4 par macho/femea STAUBLI", 20, 0, "CONFERIR", "20 pares para 10 modulos"),
+    ("Parafuso T M8 x 40 / porca / arruela", 6, 0, "CONFERIR", "Fixacao da estrutura"),
+    ("Placa de advertencia geracao solar", 3, 0, "CONFERIR", "Cortesia da Route 66"),
+]
+r = 6
+for lab, ped, receb, st, obs in rec:
+    ws.cell(row=r, column=2, value=lab).font = BLACK
+    ws.cell(row=r, column=3, value=ped).font = BLACK
+    inp(ws, f"D{r}", receb, NUM0)
+    c = ws.cell(row=r, column=5, value=st)
+    c.font = BLACK if st == "CONFERIDO" else RED
+    c.fill = OK_F if st == "CONFERIDO" else WARN_F
+    c.alignment = Alignment(horizontal="center")
+    co = ws.cell(row=r, column=6, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 7):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+
+ws.cell(row=15, column=2, value="2) ITENS QUE NAO EXISTEM NO PEDIDO - e sem eles o sistema nao liga").font = SUB
+for c in range(2, 7):
+    ws.cell(row=15, column=c).fill = BAND
+falta2 = [
+    ("Cabo CA / cabo tronco dos microinversores", "Sem ele os micros nao chegam ao quadro"),
+    ("Conectores de tronco e TAMPAS DE TERMINACAO Deye", "Pecas proprietarias. Sem elas nao se interliga os micros"),
+    ("Disjuntor CA dedicado do sistema", "Obrigatorio pela NBR 5410"),
+    ("DPS - protecao contra surtos (CA)", "Obrigatorio. A proposta dizia 'PROTECOES INCLUSAS'"),
+    ("Quadro / caixa de protecao CA", "Onde entram disjuntor e DPS"),
+    ("Cabo e material de aterramento", "Molduras e estrutura precisam ser aterradas"),
+    ("Eletroduto / eletrocalha", "Infraestrutura de passagem"),
+    ("Material do padrao de entrada mono -> bifasico", "A proposta pag. 5 dizia incluir. O pedido nao tem nada"),
+]
+r = 16
+for lab, obs in falta2:
+    ws.cell(row=r, column=2, value=lab).font = BLACK
+    c = ws.cell(row=r, column=3, value="AUSENTE")
+    c.font = RED
+    c.fill = BAD_F
+    c.alignment = Alignment(horizontal="center")
+    co = ws.cell(row=r, column=5, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 7):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+
+for i, t in enumerate([
+    "3) O QUE AINDA PRECISA SER FOTOGRAFADO",
+    "  a) Etiqueta de dados colada no CORPO de cada microinversor: modelo exato, NUMERO DE SERIE e registro Inmetro.",
+    "     A Enel pede numero de serie na vistoria e a Deye usa esse numero para registrar a garantia.",
+    "  b) Etiqueta atras de um painel: confirmar ZXNR-MD132-650, 650 W e a eficiencia do modelo monofacial.",
+    "  c) Nota fiscal: quantos micros foram faturados e com QUAL MODELO escrito.",
+    "",
+    "ALERTA DE CADASTRO: a Route 66 anuncia o produto como 'SUN-S225G4-EU-Q0' mas o COD. FABRICA no cadastro dela",
+    "diz 'SUN-M225G-EU' - serie M, sem o 4 do G4 e sem o sufixo Q0. A CAIXA fisica traz S225G4-EU-Q0 marcado.",
+    "Exigir NF com o modelo da caixa: divergencia de modelo trava chamado de garantia e pode gerar pendencia no Inmetro.",
+    "",
+    "EMBALAGEM REAPROVEITADA: parte do material veio em caixa da Intelbras (fechadura IFX 4000 ID) que a Route 66",
+    "recebeu em 17/07/26. Nao e irregularidade, mas conferir o conteudo item a item - etiqueta reaproveitada esconde erro.",
+]):
+    c = ws.cell(row=25 + i, column=2, value=t)
+    c.font = SUB if t.startswith("3)") else (RED if t.startswith("ALERTA") else BLACK)
+
+
+# =====================================================================
+# DOCS_ENEL - divergencias nos documentos de homologacao
+# =====================================================================
+ws = sheet("DOCS_ENEL")
+for col, w in [("A", 3), ("B", 34), ("C", 22), ("D", 22), ("E", 22), ("F", 60)]:
+    ws.column_dimensions[col].width = w
+title(ws, "DOCUMENTOS DE HOMOLOGACAO - CONFERENCIA E DIVERGENCIAS",
+      "ART CREA 2620262606721 | Anexo 1 e Anexo 4 da NT 6.010 | Procuracao - todos de 13 a 19/08/2026. NENHUM ASSINADO ainda.")
+
+ws.cell(row=4, column=2, value="1) A MESMA GRANDEZA, TRES VALORES DIFERENTES").font = SUB
+for c in range(2, 7):
+    ws.cell(row=4, column=c).fill = BAND
+hdr_row(ws, 5, ["Documento", "Potencia declarada", "Realidade fisica", "Status", "Comentario"], start=2)
+ws.row_dimensions[5].height = 30
+pot = [
+    ("ART CREA 2620262606721", "6,50 kWp", "6,50 kWp (10 x 650 W)", "OK",
+     "Cobre projeto E execucao. Valor de contrato R$ 1,00. Prazo 13/08 a 13/09/2026 - vai precisar prorrogar"),
+    ("Anexo 1 - Formulario de Solicitacao", "6,50 kW", "6,75 kW AC (3 micros)", "CORRIGIR",
+     "A Enel considera a potencia do INVERSOR (AC), nao a dos modulos. Declarar 6,75 kW"),
+    ("Anexo 4 - Dados da Unidade", "8,45 kW", "6,75 kW AC", "ERRADO",
+     "8,45 kW = 13 x 650 W. Nao existe painel para isso. Provavel copia de outro projeto ou do dimensionamento alvo"),
+    ("Anexo 4 - quantidade de inversores", "04 micros + 04 subpaineis", "3 micros", "ERRADO",
+     "CONFIRMADO FISICAMENTE: 3 caixas. Se homologar 4 e instalar 3, reprova na vistoria"),
+    ("App Deye Cloud (equipamento)", "6,50 kWp", "6,50 kWp", "OK",
+     "O proprio equipamento reporta 6,50 kWp - mais uma prova de que o 8,45 do Anexo 4 esta errado"),
+]
+r = 6
+for a, b, c_, st, obs in pot:
+    ws.cell(row=r, column=2, value=a).font = BLACK
+    ws.cell(row=r, column=3, value=b).font = BLACK
+    ws.cell(row=r, column=4, value=c_).font = BLACK
+    cc_ = ws.cell(row=r, column=5, value=st)
+    cc_.font = BLACK if st == "OK" else RED
+    cc_.fill = OK_F if st == "OK" else (BAD_F if st == "ERRADO" else WARN_F)
+    cc_.alignment = Alignment(horizontal="center")
+    co = ws.cell(row=r, column=6, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for k in range(2, 7):
+        ws.cell(row=r, column=k).border = BOX
+    r += 1
+
+ws.cell(row=13, column=2, value="2) OUTRAS DIVERGENCIAS").font = SUB
+for c in range(2, 7):
+    ws.cell(row=13, column=c).fill = BAND
+div = [
+    ("Tipo de conexao", "Anexo 1 marca BIFASICA", "Padrao atual e MONOFASICO", "CRITICO",
+     "O formulario ja pressupoe a adequacao que NINGUEM incluiu no preco. Custo estimado R$ 2.500 + disponibilidade 30 -> 50 kWh/mes"),
+    ("Tensao de atendimento", "120/240 V", "Enel SP e 127/220 V", "CONFERIR",
+     "Anexo 1 e Anexo 4 marcam 120/240V. Conferir na fatura. Se errado, e pendencia quase certa no parecer"),
+    ("Modelo do microinversor", "SUNS225G4-EUQ0", "SUN-S225G4-EU-Q0 (caixa)", "OK",
+     "O Anexo 4 esta CERTO. Quem erra e o cadastro da Route 66 (COD FABRICA SUN-M225G-EU) e a linha antiga desta planilha"),
+    ("Responsavel tecnico", "Alan Monteiro de Lima", "MBA Solar - Ribeirao Preto", "ATENCAO",
+     "CREA-SP 5070710126, engenharia@mbasolar.com.br. ART terceirizada, de outra empresa e outra cidade. CNPJ da SunWash segue NAO INFORMADO"),
+    ("E-mail do titular", "Henrique.onyx@hotmail.com", "confirmar qual e o usado", "CONFERIR",
+     "E para esse e-mail que a Enel manda o parecer de acesso e os prazos"),
+    ("Carga instalada declarada", "13 kW", "confirmar", "CONFERIR",
+     "Inclui o carregador do BYD? A carga instalada define disjuntor e padrao"),
+    ("Anexo 1 - item 4 da documentacao", "NAO marcado", "dados p/ registro ANEEL", "CONFERIR",
+     "Itens 1, 2 e 3 marcados. O item 4 em branco pode voltar como pendencia"),
+    ("ART - contrato", "Celebrado em 13/08/2026", "confirmar", "CONFERIR",
+     "A ART declara um contrato dessa data. Havia contrato assinado? O pedido Route 66 e de 12/08 com validade ate 15/08"),
+]
+r = 14
+for a, b, c_, st, obs in div:
+    ws.cell(row=r, column=2, value=a).font = BLACK
+    ws.cell(row=r, column=3, value=b).font = BLACK
+    ws.cell(row=r, column=4, value=c_).font = BLACK
+    cc_ = ws.cell(row=r, column=5, value=st)
+    cc_.font = BLACK if st == "OK" else RED
+    cc_.fill = OK_F if st == "OK" else (BAD_F if st == "CRITICO" else WARN_F)
+    cc_.alignment = Alignment(horizontal="center")
+    co = ws.cell(row=r, column=6, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for k in range(2, 7):
+        ws.cell(row=r, column=k).border = BOX
+    r += 1
+
+for i, t in enumerate([
+    "3) ALERTA MAIOR - O SISTEMA JA ESTA GERANDO SEM HOMOLOGACAO",
+    "O app Deye mostra a usina online desde 27/08/2026, mas o parecer de acesso da Enel nao saiu e o Anexo 4 nem foi",
+    "corrigido. Enquanto o medidor BIDIRECIONAL nao for instalado:",
+    "  - toda energia que sobrar e for para a rede e PERDIDA, nao vira credito;",
+    "  - dependendo do modelo do medidor, a energia exportada pode ser registrada como CONSUMO e cobrada de voce.",
+    "",
+    "O QUE FAZER ATE A HOMOLOGACAO SAIR: consumir tudo o que gerar, no proprio dia. Carregar o BYD entre 9h e 15h,",
+    "concentrar maquina de lavar, ar-condicionado e chuveiro no horario de sol. Energia autoconsumida na hora nao paga",
+    "nem o Fio B - vale MAIS que credito. E conferir a proxima fatura com lupa.",
+    "",
+    "4) SEQUENCIA CORRETA ANTES DE ASSINAR QUALQUER DOCUMENTO",
+    "  1. Corrigir o Anexo 4 para 3 microinversores / 6,75 kW AC e remover o 8,45 kW.",
+    "  2. Corrigir a tensao para 127/220 V se a fatura confirmar.",
+    "  3. Definir POR ESCRITO quem executa e quem paga a adequacao do padrao mono -> bifasico.",
+    "  4. Obter o registro Inmetro do SUN-S225G4-EU-Q0 (modelo exato) e os numeros de serie dos 3 micros.",
+    "  5. So entao assinar Anexo 1, Anexo 4, ART e procuracao.",
+]):
+    c = ws.cell(row=23 + i, column=2, value=t)
+    c.font = SUB if t[:2] in ("3)", "4)") else (RED if t.startswith(("O QUE FAZER", "  - ")) else BLACK)
+
+
+# =====================================================================
+# MODULO - ficha tecnica do painel instalado
+# =====================================================================
+ws = sheet("MODULO")
+for col, w in [("A", 3), ("B", 42), ("C", 22), ("D", 12), ("E", 66)]:
+    ws.column_dimensions[col].width = w
+title(ws, "MODULO INSTALADO - ZNSHINE ZXNR-MD132-650",
+      "Dados do datasheet oficial ZNShine serie ZXNR-BD132 (versao bifacial irma). CONFIRMAR na etiqueta do painel os valores da versao MD (monofacial).")
+esp = [
+    (5, "EFICIENCIA MAXIMA DO MODULO", 0.2406, PCT, "Topo da faixa 620-650 W. Referencia de mercado: comum 20-21%, bom 22-23%. 24% e linha premium"),
+    (6, "Potencia nominal Pmax", 650, NUM0, "W - STC"),
+    (7, "Comprimento", 2382, NUM0, "mm"),
+    (8, "Largura", 1134, NUM0, "mm"),
+    (9, "AREA DE UM MODULO", "=C7*C8/1000000", NUM2, "m2 - calculado"),
+    (10, "Numero de modulos", 10, NUM0, "Confirmado fisicamente em 27/08/2026"),
+    (11, "AREA TOTAL OCUPADA NO TELHADO", "=C9*C10", NUM2, "m2"),
+    (12, "POTENCIA DC DO SISTEMA", "=C6*C10/1000", NUM2, "kWp - bate com a ART, o Anexo 1 e o app Deye"),
+    (13, "Conferencia: area x eficiencia x 1000 W/m2", "=C11*C5", NUM2, "kW a pleno sol - tem que dar igual a linha 12"),
+    (15, "Tensao de maxima potencia Vmp", 42.20, NUM2, "V"),
+    (16, "Corrente de maxima potencia Imp", 15.41, NUM2, "A"),
+    (17, "Tensao de circuito aberto Voc", 50.10, NUM2, "V"),
+    (18, "CORRENTE DE CURTO Isc", 16.34, NUM2, "A - CRITICO: tem que ser menor que a corrente maxima por MPPT do microinversor"),
+    (19, "Limite de corrente por MPPT do Deye", 18.0, NUM2, "A - valor da serie M. CONFIRMAR no datasheet da serie S"),
+    (20, "FOLGA DE CORRENTE", "=C19-C18", NUM2, "A - se der negativo, ha corte de corrente e perda de geracao"),
+    (22, "Potencia em NMOT (condicao real)", 494, NUM0, "W por modulo - 800 W/m2, 44 graus C, vento 1 m/s"),
+    (23, "Potencia do sistema em NMOT", "=C22*C10/1000", NUM2, "kW - referencia realista para comparar com o app"),
+    (24, "Coeficiente de temperatura de Pmax", -0.0028, PCT, "por grau C. PERC comum e -0,35%/C - o seu perde menos no calor"),
+    (25, "Perda a 60 graus C de celula", "=(60-25)*-C24", PCT, "Perda em relacao a STC (25 C)"),
+    (27, "Degradacao anual", 0.0040, PCT, "N-type TOPCon. Melhor que PERC (~0,55%/ano)"),
+    (28, "Potencia restante no ano 25", "=(1-C27)^24", PCT, "Do valor de fabrica"),
+    (30, "Garantia de PRODUTO (datasheet oficial)", 12, NUM0, "anos"),
+    (31, "Garantia de PERFORMANCE (datasheet oficial)", 30, NUM0, "anos"),
+]
+for r, lab, v, fmt, note in esp:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
+    if isinstance(v, str) and v.startswith("="):
+        frm(ws, f"C{r}", v, fmt, BOLD if lab.isupper() else BLACK)
+    else:
+        inp(ws, f"C{r}", v, fmt)
+    ws.cell(row=r, column=5, value=note).font = SMALL
+    ws.cell(row=r, column=5).alignment = Alignment(wrap_text=True, vertical="top")
+for cell in ("C5", "C12", "C18", "C20"):
+    ws[cell].fill = OK_F
+for i, t in enumerate([
+    "ALERTA DE GARANTIA: o datasheet oficial diz 12 anos de PRODUTO e 30 anos de PERFORMANCE.",
+    "A proposta do Yuri dizia 12/25 anos e o PEDIDO Route 66 dizia 15 anos. Nenhum dos dois bate com o fabricante.",
+    "Exigir que a nota fiscal e o termo de garantia digam 12/30 - e o que a ZNShine efetivamente oferece.",
+    "",
+    "COMO USAR ESTA ABA: a linha 13 e um teste de sanidade. Area total x eficiencia x 1.000 W/m2 tem que dar a mesma",
+    "potencia da linha 12. Se a etiqueta do painel trouxer uma eficiencia diferente, altere a celula C5 e as contas se ajustam.",
+]):
+    c = ws.cell(row=34 + i, column=2, value=t)
+    c.font = RED if t.startswith("ALERTA") else (SUB if t.startswith("COMO USAR") else BLACK)
+
+# =====================================================================
+# GERACAO_REAL - minimo, medio e maximo por mes
+# =====================================================================
+ws = sheet("GERACAO_REAL")
+for col, w in [("A", 3), ("B", 10), ("C", 15), ("D", 15), ("E", 15), ("F", 14), ("G", 14), ("H", 52)]:
+    ws.column_dimensions[col].width = w
+title(ws, "GERACAO ESPERADA DO SISTEMA INSTALADO - 6,50 kWp",
+      "10 modulos ZNShine 650 W + 3 microinversores Deye SUN-S225G4-EU-Q0 (6,75 kW AC). Puxa a irradiacao da aba GERACAO.")
+inp(ws, "C4", 6.50, NUM2)
+ws.cell(row=4, column=2, value="kWp instalado").font = BOLD
+hdr_row(ws, 6, ["Mes", "MINIMO (PR 0,72)", "REALISTA (PR 0,79)", "Se fosse NORTE",
+                "kWh/dia realista", "% do melhor mes", "Comentario"], start=2)
+ws.row_dimensions[6].height = 42
+for i in range(12):
+    r = 7 + i
+    g = 5 + i
+    ws.cell(row=r, column=2, value=meses[i]).font = BLACK
+    frm(ws, f"C{r}", f"=GERACAO!F{g}*GERACAO!C{g}*ENTRADAS!$C$32*$C$4", NUM0)
+    frm(ws, f"D{r}", f"=GERACAO!I{g}*$C$4", NUM0, BOLD)
+    frm(ws, f"E{r}", f"=GERACAO!J{g}*$C$4", NUM0)
+    frm(ws, f"F{r}", f"=IFERROR(D{r}/GERACAO!C{g},0)", NUM2)
+    frm(ws, f"G{r}", f"=IFERROR(D{r}/MAX($D$7:$D$18),0)", PCT)
+    for cc in range(2, 9):
+        ws.cell(row=r, column=cc).border = BOX
+ws.cell(row=19, column=2, value="ANO").font = BOLD
+for col in "CDE":
+    frm(ws, f"{col}19", f"=SUM({col}7:{col}18)", NUM0, BOLD)
+    ws[f"{col}19"].fill = BAND
+ws.cell(row=20, column=2, value="MEDIA MES").font = BOLD
+for col in "CDE":
+    frm(ws, f"{col}20", f"={col}19/12", NUM0, BOLD)
+ws["D20"].fill = OK_F
+ws.cell(row=21, column=2, value="PIOR MES").font = BOLD
+frm(ws, "D21", "=MIN(D7:D18)", NUM0, RED)
+ws["D21"].fill = BAD_F
+ws.cell(row=22, column=2, value="MELHOR MES").font = BOLD
+frm(ws, "D22", "=MAX(D7:D18)", NUM0, BOLD)
+ws["D22"].fill = OK_F
+ws.cell(row=23, column=2, value="Amplitude melhor / pior").font = BLACK
+frm(ws, "D23", "=IFERROR(D22/D21-1,0)", PCT)
+ws.cell(row=24, column=2, value="Geracao no ANO 1 (com 2% de degradacao)").font = BOLD
+frm(ws, "D24", "=D19*(1-ENTRADAS!C33)", NUM0, BOLD)
+
+ws.cell(row=26, column=2, value="COBERTURA POR CENARIO DE CONSUMO").font = SUB
+for c in range(2, 9):
+    ws.cell(row=26, column=c).fill = BAND
+hdr_row(ws, 27, ["Cenario", "kWh/mes", "Cobertura 10 mod", "Cobertura 12 mod", "Saldo/mes 10 mod", "Veredito"], start=2)
+cen2 = [
+    ("Casa estavel, antes de maio", "=MEDIAS!C6"),
+    ("Casa HOJE (com o degrau, sem carro)", "=MEDIAS!C7"),
+    ("Casa + carro, mes sem viagem", "=MEDIAS!C8"),
+    ("Casa + carro, ritmo observado", "=MEDIAS!C9"),
+    ("Casa + carro 100% ELETRICO (objetivo)", "=MEDIAS!C10"),
+]
+r = 28
+for lab, f in cen2:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if "OBJETIVO" in lab.upper() else BLACK
+    frm(ws, f"C{r}", f, NUM0)
+    frm(ws, f"D{r}", f"=IFERROR($D$20/C{r},0)", PCT, BOLD)
+    frm(ws, f"E{r}", f"=IFERROR($D$20*1.2/C{r},0)", PCT)
+    frm(ws, f"F{r}", f"=$D$20-C{r}", NUM0)
+    frm(ws, f"G{r}", f'=IF(D{r}>=1,"COBRE","FALTA "&TEXT(1-D{r},"0.0%"))', None, BOLD)
+    for cc in range(2, 8):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+ws["C32"].fill = WARN_F
+for i, t in enumerate([
+    "LEITURA: os 10 modulos cobrem a casa e cobrem o carro no ritmo de hoje. NAO cobrem o objetivo declarado",
+    "de rodar tudo no eletrico - ali faltam cerca de 12%, e voce volta a pagar conta de luz todo mes, para sempre.",
+    "Com 12 modulos (7,80 kWp) o objetivo fecha. Ver a aba EXPANSAO_12.",
+]):
+    c = ws.cell(row=35 + i, column=2, value=t)
+    c.font = RED if i == 0 else BLACK
+
+
+# =====================================================================
+# MEDIAS - a escada de consumo, do historico ao objetivo
+# =====================================================================
+ws = sheet("MEDIAS")
+for col, w in [("A", 3), ("B", 40), ("C", 13), ("D", 13), ("E", 13), ("F", 13), ("G", 13), ("H", 56)]:
+    ws.column_dimensions[col].width = w
+title(ws, "SUA MEDIA DE CONSUMO - DE ONDE VEIO E ONDE VAI PARAR",
+      "Base: 13 meses da fatura Enel + odometro do BYD em 26/08/2026 (1.773 km, AEC 7,6 kWh/100km + 2,9 L/100km, carro retirado em 06/08/2026).")
+hdr_row(ws, 5, ["Cenario", "kWh/mes", "Conta VERDE", "Conta AMARELA", "R$/ano", "vs media 12m", "Comentario"], start=2)
+ws.row_dimensions[5].height = 30
+esc = [
+    (6, "1 - Casa estavel (Jul/25 a Abr/26)", "=CONTA!C77*30.4",
+     "10 meses com o diario entre 10,0 e 12,3 kWh. E a sua casa 'limpa', sem o degrau e sem o carro"),
+    (7, "2 - Casa HOJE (Mai a Jul/26, com o degrau)", "=CONTA!C78*30.4",
+     "DEGRAU de 3,8 kWh/dia apareceu em maio/2026. NAO e o carro - ele so chegou em 06/08. Ha carga nova na casa"),
+    (8, "3 - Casa + carro, mes SEM viagem", "=C7+C13*30.4",
+     "Rodagem util de 62,6 km/dia (1.773 km menos as duas viagens de 320 e 200 km), no habito de carga atual"),
+    (9, "4 - Casa + carro, ritmo observado", "=C7+C12*30.4",
+     "O que realmente saiu da tomada nos primeiros 20 dias, viagens incluidas"),
+    (10, "5 - Casa + carro 100% ELETRICO", "=C7+C14*30.4",
+     "OBJETIVO DECLARADO: rodar tudo no eletrico, 62,6 km/dia a 14,2 kWh/100km"),
+]
+for r, lab, f, obs in esc:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if r == 10 else BLACK
+    frm(ws, f"C{r}", f, NUM0, BOLD)
+    frm(ws, f"D{r}", f"=C{r}*(ENTRADAS!$C$18-ENTRADAS!$C$21)+ENTRADAS!$C$26", MONEY)
+    frm(ws, f"E{r}", f"=C{r}*ENTRADAS!$C$18+ENTRADAS!$C$26", MONEY, BOLD)
+    frm(ws, f"F{r}", f"=E{r}*12", MONEY0)
+    frm(ws, f"G{r}", f"=C{r}-CONTA!$C$23", NUM0)
+    co = ws.cell(row=r, column=8, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 9):
+        ws.cell(row=r, column=cc).border = BOX
+ws["C7"].fill = WARN_F
+ws["C10"].fill = BAD_F
+ws.cell(row=4, column=2, value="Media dos 12 meses da fatura (Ago/25 a Jul/26)").font = BOLD
+frm(ws, "C4", "=CONTA!C23", NUM0, BOLD)
+ws["C4"].fill = OK_F
+frm(ws, "E4", "=C4*ENTRADAS!C18+ENTRADAS!C26", MONEY, BOLD)
+
+ws.cell(row=11, column=2, value="DADOS DO BYD MEDIDOS NO ODOMETRO (nao sao estimativa)").font = SUB
+for c in range(2, 9):
+    ws.cell(row=11, column=c).fill = BAND
+byd = [
+    (12, "Energia da tomada por dia - ritmo observado", "=C20/C18", NUM2, "kWh/dia",
+     "1.773 km x 7,6 kWh/100km / 86% de eficiencia, dividido pelos 20 dias de uso"),
+    (13, "Energia da tomada por dia - mes sem viagem", "=C22*C21/100/ENTRADAS!C45", NUM2, "kWh/dia",
+     "So a rodagem util, no consumo cumulativo do painel"),
+    (14, "Energia da tomada por dia - 100% eletrico", "=C22*C19/100/ENTRADAS!C45", NUM2, "kWh/dia",
+     "Rodagem util ao consumo REAL de 14,2 kWh/100km medido nos ultimos 50 km"),
+    (16, "Odometro em 26/08/2026", 1773, NUM0, "km", "Print do app do carro"),
+    (17, "Viagens longas (320 + 200 km)", 520, NUM0, "km", "Rodaram em modo HIBRIDO - nao pesam na conta de luz"),
+    (18, "Dias com o carro (06/08 a 26/08)", 20, NUM0, "dias", "Carro retirado 0 km em 06/08/2026"),
+    (19, "Consumo eletrico REAL - ultimos 50 km", 14.2, NUM2, "kWh/100km",
+     "MEDIDO no app. A planilha assumia 16,0 - o carro e 11% mais eficiente que o previsto"),
+    (20, "ENERGIA TOTAL DA TOMADA DESDE 0 km", "=C16*C21/100/ENTRADAS!C45", NUM0, "kWh",
+     "TETO: num DM-i parte da carga da bateria pode vir do motor, nao da tomada"),
+    (21, "AEC cumulativo eletrico", 7.6, NUM2, "kWh/100km", "Media de toda a vida do carro, do app"),
+    (22, "Rodagem util por dia (sem as viagens)", "=(C16-C17)/C18", NUM2, "km/dia",
+     "Abaixo dos 80 km/dia que a planilha assumia"),
+    (23, "Custo do carro na conta de luz ate hoje", "=C20*ENTRADAS!C18", MONEY, "R$", ""),
+    (24, "Gasolina queimada desde 0 km", "=C16*2.9/100", NUM2, "L", "AEC cumulativo de 2,9 L/100km - 63% foi nas duas viagens"),
+]
+for r, lab, f, fmt, unit, note in byd:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
+    if isinstance(f, str) and f.startswith("="):
+        frm(ws, f"C{r}", f, fmt, BOLD if lab.isupper() else BLACK)
+    else:
+        inp(ws, f"C{r}", f, fmt)
+    ws.cell(row=r, column=4, value=unit).font = SMALL
+    co = ws.cell(row=r, column=8, value=note)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+ws["C20"].fill = OK_F
+
+for i, t in enumerate([
+    "O DEGRAU DE MAIO NAO E O CARRO - E O ACHADO QUE MAIS VALE DINHEIRO NESTA PLANILHA",
+    "O carro foi retirado 0 km em 06/08/2026 e consumiu 157 kWh da tomada em TODA a vida dele.",
+    "O degrau da conta comecou em MAIO e ja acumulou cerca de 351 kWh entre maio e julho - mais que o dobro.",
+    "Ou seja: ha uma carga nova ligada na sua casa desde maio, consumindo cerca de 117 kWh/mes = R$ 118/mes = R$ 1.416/ano.",
+    "COMO ACHAR: com tudo desligado, veja se o medidor ainda gira. Depois va religando circuito por circuito.",
+    "Suspeitos tipicos: chuveiro trocado, ar-condicionado, freezer velho, bomba d'agua, aquecedor, mais um morador.",
+    "",
+    "DUAS PREMISSAS DA PLANILHA FORAM CORRIGIDAS PELO MUNDO REAL:",
+    "  - consumo do carro: assumido 16,0 kWh/100km, MEDIDO 14,2 (11% melhor);",
+    "  - rodagem diaria: assumida 80 km/dia, MEDIDA 62,6 km/dia uteis (as viagens longas rodam no hibrido).",
+    "As duas quase se anulam na demanda diaria: 12,80 kWh/dia previstos contra 12,59 kWh/dia reais.",
+]):
+    c = ws.cell(row=27 + i, column=2, value=t)
+    c.font = RED if t.isupper() or t.startswith("COMO ACHAR") else BLACK
+
+# =====================================================================
+# EXPANSAO_12 - os dois modulos que faltam
+# =====================================================================
+ws = sheet("EXPANSAO_12")
+for col, w in [("A", 3), ("B", 46), ("C", 16), ("D", 12), ("E", 66)]:
+    ws.column_dimensions[col].width = w
+title(ws, "EXPANSAO PARA 12 MODULOS - A MELHOR CONTA DO PROJETO",
+      "Os 3 microinversores tem 4 MPPTs cada = 12 canais. Com 10 modulos sobram 2 canais livres, e a estrutura comprada (3 kits x 4 placas) ja comporta 12.")
+exp = [
+    (5, "Canais de MPPT disponiveis (3 micros x 4)", 12, NUM0, "canais", "Cada canal aceita um modulo, com rastreamento independente"),
+    (6, "Modulos instalados hoje", 10, NUM0, "modulos", "Confirmados fisicamente"),
+    (7, "CANAIS LIVRES", "=C5-C6", NUM0, "canais", "E o limite REAL de expansao em microinversor - nao a potencia"),
+    (8, "Lugares na estrutura ja comprada (3 kits x 4)", 12, NUM0, "lugares", "HS-KIT4P-CER: 3 kits para 4 placas cada"),
+    (9, "Perfis de aluminio comprados", 24, NUM0, "metros", "5 pares de 2,4 m. Adequado para 10 modulos SEM FOLGA - pode faltar para 12"),
+    (11, "Potencia DC com 12 modulos", "=(C6+C7)*MODULO!C6/1000", NUM2, "kWp", ""),
+    (12, "Potencia AC dos 3 micros", 6.75, NUM2, "kW", "3 x 2,25 kW"),
+    (13, "Relacao DC/AC com 12 modulos", "=C11/C12", NUM2, "", "Ideal entre 1,10 e 1,30. Acima de 1,35 comeca a cortar geracao"),
+    (14, "Relacao DC/AC hoje, com 10 modulos", "=C6*MODULO!C6/1000/C12", NUM2, "", "Abaixo de 1,10 significa inversor subaproveitado"),
+    (16, "Geracao extra por ano", "=C7*MODULO!C6/1000*GERACAO!$I$17", NUM0, "kWh/ano", "Usa a irradiacao real do seu telhado"),
+    (17, "Geracao extra por mes", "=C16/12", NUM0, "kWh/mes", ""),
+    (18, "Economia por kWh compensado", "=ENTRADAS!C18-ENTRADAS!C25", MONEY, "R$/kWh", "Tarifa cheia menos o Fio B efetivo de 2026"),
+    (19, "ECONOMIA ANUAL DA EXPANSAO", "=C16*C18", MONEY, "R$/ano", ""),
+    (21, "Custo de um modulo instalado", "=ENTRADAS!C54", MONEY, "R$/modulo", "Modulo + mao de obra marginal. A estrutura ja esta comprada"),
+    (22, "CUSTO TOTAL DA EXPANSAO", "=C7*C21", MONEY, "R$", ""),
+    (23, "PAYBACK DA EXPANSAO", "=IFERROR(C22/C19*12,0)", NUM2, "meses", "Compare com o payback do sistema inteiro"),
+    (25, "Cobertura do objetivo com 10 modulos", "=IFERROR(GERACAO_REAL!D20/MEDIAS!C10,0)", PCT, "", "Casa + carro 100% eletrico"),
+    (26, "Cobertura do objetivo com 12 modulos", "=IFERROR(GERACAO_REAL!D20*(C6+C7)/C6/MEDIAS!C10,0)", PCT, "", "E a diferenca entre pagar conta para sempre e nao pagar"),
+]
+for r, lab, v, fmt, unit, note in exp:
+    ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
+    if isinstance(v, str) and v.startswith("="):
+        frm(ws, f"C{r}", v, fmt, BOLD if lab.isupper() else BLACK)
+    else:
+        inp(ws, f"C{r}", v, fmt)
+    ws.cell(row=r, column=4, value=unit).font = SMALL
+    co = ws.cell(row=r, column=5, value=note)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+for cell in ("C7", "C19", "C23", "C26"):
+    ws[cell].fill = OK_F
+ws["C22"].fill = WARN_F
+ws["C25"].fill = BAD_F
+for i, t in enumerate([
+    "POR QUE ESTA E A MELHOR CONTA DO PROJETO:",
+    "Voce ja pagou pelos canais de MPPT (estao ociosos) e ja pagou pela estrutura (3 kits comportam 12 placas).",
+    "A expansao custa praticamente so o modulo e a mao de obra dele - sem inversor, sem projeto novo, sem estrutura nova.",
+    "",
+    "ATENCAO 1: os perfis de aluminio comprados (24 m) atendem 10 modulos sem folga. Para 12 provavelmente falta trilho.",
+    "ATENCAO 2: aumentar a potencia depois de homologado exige NOVA solicitacao de acesso a Enel. Se a decisao for expandir,",
+    "o ideal e ja homologar com 12 modulos (7,80 kWp / 6,75 kW AC) de uma vez, e nao refazer o processo depois.",
+]):
+    c = ws.cell(row=29 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else (RED if t.startswith("ATENCAO") else BLACK)
+
+
+# =====================================================================
+# MONITORAMENTO - leitura do app Deye e teste de orientacao
+# =====================================================================
+ws = sheet("MONITORAMENTO")
+for col, w in [("A", 3), ("B", 44), ("C", 14), ("D", 14), ("E", 14), ("F", 12), ("G", 62)]:
+    ws.column_dimensions[col].width = w
+title(ws, "MONITORAMENTO - APP DEYE CLOUD",
+      "Usina 'Henrique SP', Online/Normal, capacidade 6,50 kWp. Primeira leitura em 27/08/2026.")
+
+ws.cell(row=4, column=2, value="1) TESTE DE ORIENTACAO PELO PICO DE POTENCIA").font = SUB
+for c in range(2, 8):
+    ws.cell(row=4, column=c).fill = BAND
+ws.cell(row=5, column=2, value="Um sistema NAO PODE gerar acima do teto de ceu limpo da sua orientacao. Nuvem so reduz, nunca aumenta.").font = SMALL
+ws.cell(row=6, column=2, value="Por isso o PICO e a prova, e a tarde nublada nao serve para julgar.").font = SMALL
+hdr_row(ws, 7, ["Orientacao do telhado (20 graus)", "Pico teorico", "Hora do pico", "Potencia as 12:30", "Bate?", "Comentario"], start=2)
+ws.row_dimensions[7].height = 30
+ori = [
+    ("SUDESTE (135 graus) - o declarado", 3.80, "11:00", 3.51, "NAO",
+     "O pico medido de 5,2 kW e 37% ACIMA do teto fisico de um telhado Sudeste. Impossivel"),
+    ("NORTE (0 graus)", 5.19, "12:00", 5.16, "SIM",
+     "Bate quase exatamente com os 5,2 kW medidos as 12:30"),
+    ("NOROESTE (315 graus)", 5.04, "13:00", 5.02, "SIM",
+     "Tambem compativel. Um dia inteiro de ceu limpo separa Norte de Noroeste"),
+]
+r = 8
+for lab, pico, hora, p1230, bate, obs in ori:
+    ws.cell(row=r, column=2, value=lab).font = BLACK
+    inp(ws, f"C{r}", pico, NUM2)
+    ws.cell(row=r, column=4, value=hora).font = BLACK
+    inp(ws, f"E{r}", p1230, NUM2)
+    c = ws.cell(row=r, column=6, value=bate)
+    c.font = RED if bate == "NAO" else BLACK
+    c.fill = BAD_F if bate == "NAO" else OK_F
+    c.alignment = Alignment(horizontal="center")
+    co = ws.cell(row=r, column=7, value=obs)
+    co.font = SMALL
+    co.alignment = Alignment(wrap_text=True, vertical="top")
+    for cc in range(2, 8):
+        ws.cell(row=r, column=cc).border = BOX
+    r += 1
+ws.cell(row=12, column=2, value="PICO MEDIDO NO APP em 27/08/2026").font = BOLD
+inp(ws, "C12", 5.20, NUM2)
+ws["C12"].fill = OK_F
+ws.cell(row=12, column=4, value="~12:30").font = BOLD
+ws.cell(row=13, column=2, value="Pico em % da potencia nominal").font = BLACK
+frm(ws, "C13", "=IFERROR(C12/GERACAO_REAL!C4,0)", PCT, BOLD)
+ws.cell(row=13, column=7, value="80% da nominal e praticamente o teto real de um sistema FV. Prova que os 10 modulos estao ligados e produzindo.").font = SMALL
+
+for i, t in enumerate([
+    "CONSEQUENCIA SE O TELHADO NAO FOR SUDESTE: a geracao anual sobe. Sudeste da 1.264 kWh por kWp ao ano;",
+    "Norte da 1.421. Sobre 6,50 kWp isso e a diferenca entre 8.218 e 9.238 kWh por ano - mais 12%.",
+    "A cobertura do objetivo (casa + carro 100% eletrico) iria de 88% para cerca de 98% com os mesmos 10 modulos.",
+    "",
+    "RESSALVAS ANTES DE CONCLUIR: (a) so vimos meio dia - o sistema aparentemente foi energizado ao meio-dia;",
+    "(b) a inclinacao real pode nao ser 20 graus; (c) picos podem ser inflados por reflexo de nuvem (cloud enhancement),",
+    "efeito que costuma valer 10 a 30% - insuficiente para explicar os 37% de diferenca do Sudeste, mas nao e zero;",
+    "(d) os modulos podem estar divididos em mais de uma agua do telhado.",
+    "O TESTE DEFINITIVO E UM DIA INTEIRO DE CEU LIMPO: se o pico ficar perto do meio-dia e a curva for simetrica, e Norte.",
+    "Se o pico for as 11h com cerca de 3,8 kW e a tarde cair rapido, e Sudeste mesmo.",
+]):
+    c = ws.cell(row=15 + i, column=2, value=t)
+    c.font = RED if t.startswith(("CONSEQUENCIA", "O TESTE")) else BLACK
+
+ws.cell(row=26, column=2, value="2) ACOMPANHAMENTO MENSAL - REAL x PREVISTO").font = SUB
+for c in range(2, 8):
+    ws.cell(row=26, column=c).fill = BAND
+hdr_row(ws, 27, ["Mes", "PREVISTO (kWh)", "REAL do app (kWh)", "Diferenca", "% do previsto", "Observacao"], start=2)
+for i in range(12):
+    r = 28 + i
+    ws.cell(row=r, column=2, value=meses[i]).font = BLACK
+    frm(ws, f"C{r}", f"=GERACAO_REAL!D{7+i}", NUM0)
+    inp(ws, f"D{r}", "", NUM0)
+    frm(ws, f"E{r}", f"=IF(D{r}=\"\",\"\",D{r}-C{r})", NUM0)
+    frm(ws, f"F{r}", f"=IF(D{r}=\"\",\"\",D{r}/C{r})", PCT, BOLD)
+    inp(ws, f"G{r}", "", None)
+    for cc in range(2, 8):
+        ws.cell(row=r, column=cc).border = BOX
+ws.cell(row=40, column=2, value="ANO").font = BOLD
+frm(ws, "C40", "=SUM(C28:C39)", NUM0, BOLD)
+frm(ws, "D40", "=SUM(D28:D39)", NUM0, BOLD)
+frm(ws, "F40", "=IFERROR(D40/C40,0)", PCT, BOLD)
+
+for i, t in enumerate([
+    "COMO PREENCHER: no app Deye, aba Mes, anote o total de kWh e jogue na coluna amarela. Abaixo de 90% do previsto",
+    "por dois meses seguidos, investigue: sujeira nos modulos, sombra nova, micro offline ou modulo com defeito.",
+    "",
+    "TRES TELAS QUE VALE ACOMPANHAR NO APP:",
+    "  - aba DISPOSITIVO: mostra os 3 microinversores separadamente. E aqui que voce confirma que os tres estao",
+    "    online e ve a producao MODULO A MODULO - o recurso pelo qual voce pagou ao escolher microinversor.",
+    "  - aba DIA: a curva. Compare o formato com o teste de orientacao acima.",
+    "  - aba TOTAL: energia acumulada desde a instalacao.",
+]):
+    c = ws.cell(row=42 + i, column=2, value=t)
+    c.font = SUB if t.endswith(":") else BLACK
 
 del wb["Sheet"]
 wb.active = 0
