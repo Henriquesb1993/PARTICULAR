@@ -307,7 +307,7 @@ hdr_row(ws, 5, ["Mes/Ano", "Consumo (kWh)", "Dias", "Media (kWh/dia)"], start=2)
 hist = [("Jul/25", 389, 32), ("Ago/25", 364, 31), ("Set/25", 290, 29), ("Out/25", 375, 32),
         ("Nov/25", 337, 30), ("Dez/25", 323, 29), ("Jan/26", 372, 32), ("Fev/26", 348, 30),
         ("Mar/26", 354, 29), ("Abr/26", 394, 32), ("Mai/26", 457, 30), ("Jun/26", 422, 29),
-        ("Jul/26", 540, 33)]
+        ("Jul/26", 540, 33), ("Ago/26", 705, 29)]
 for i, (m, v, d) in enumerate(hist):
     r = 6 + i
     ws.cell(row=r, column=2, value=m).font = BLACK
@@ -316,27 +316,27 @@ for i, (m, v, d) in enumerate(hist):
     frm(ws, f"E{r}", f"=IFERROR(C{r}/D{r},0)", NUM2)
     ws.cell(row=r, column=2).border = BOX
     ws.cell(row=r, column=5).border = BOX
-ws["C18"].fill = BAD_F
+ws["C19"].fill = BAD_F
 ws["C8"].fill = OK_F
-ws.cell(row=19, column=2, value="Linha 6 = Jul/25 (mes mais antigo). Linha 18 = Jul/26 (mes atual). Verde = menor consumo. Vermelho = maior consumo.").font = SMALL
+ws.cell(row=20, column=2, value="Linha 6 = Jul/25 (mes mais antigo). Linha 19 = Ago/26 (mes atual). Verde = menor consumo. Vermelho = maior consumo.").font = SMALL
 
 ws.cell(row=21, column=2, value="ESTATISTICAS DOS 12 MESES MAIS RECENTES (Ago/25 a Jul/26)").font = SUB
 for c in range(2, 6):
     ws.cell(row=21, column=c).fill = BAND
 stats = [
-    (22, "TOTAL ANUAL", "=SUM(C7:C18)", NUM0, "kWh/ano"),
+    (22, "TOTAL ANUAL", "=SUM(C8:C19)", NUM0, "kWh/ano"),
     (23, "CONSUMO MEDIO MENSAL  =  soma / 12", "=C22/12", NUM2, "kWh/mes"),
-    (24, "Total de dias faturados", "=SUM(D7:D18)", NUM0, "dias"),
+    (24, "Total de dias faturados", "=SUM(D8:D19)", NUM0, "dias"),
     (25, "Consumo medio diario", "=IFERROR(C22/C24,0)", NUM2, "kWh/dia"),
-    (26, "MAIOR CONSUMO (Jul/26)", "=MAX(C7:C18)", NUM0, "kWh"),
-    (27, "MENOR CONSUMO (Set/25)", "=MIN(C7:C18)", NUM0, "kWh"),
+    (26, "MAIOR CONSUMO (Ago/26)", "=MAX(C8:C19)", NUM0, "kWh"),
+    (27, "MENOR CONSUMO (Set/25)", "=MIN(C8:C19)", NUM0, "kWh"),
     (28, "Amplitude maior / menor", "=IFERROR(C26/C27-1,0)", PCT, ""),
-    (29, "Consumo do mes atual (Jul/26)", "=C18", NUM0, "kWh"),
+    (29, "Consumo do mes atual (Ago/26)", "=C19", NUM0, "kWh"),
     (30, "Mes atual x media dos 12 meses", "=IFERROR(C29/C23-1,0)", PCT, ""),
-    (31, "Media dos 6 meses mais antigos (Ago/25 a Jan/26)", "=AVERAGE(C7:C12)", NUM2, "kWh/mes"),
-    (32, "Media dos 6 meses mais recentes (Fev/26 a Jul/26)", "=AVERAGE(C13:C18)", NUM2, "kWh/mes"),
+    (31, "Media dos 6 meses mais antigos (Ago/25 a Jan/26)", "=AVERAGE(C8:C13)", NUM2, "kWh/mes"),
+    (32, "Media dos 6 meses mais recentes (Fev/26 a Jul/26)", "=AVERAGE(C14:C19)", NUM2, "kWh/mes"),
     (33, "TENDENCIA - recentes x antigos", "=IFERROR(C32/C31-1,0)", PCT, "semestre contra semestre"),
-    (34, "MESMO MES, ANO ANTERIOR: Jul/25 x Jul/26", "=IFERROR(C18/C6-1,0)", PCT, "compara so julho com julho"),
+    (34, "MESMO MES, ANO ANTERIOR: Ago/25 x Ago/26", "=IFERROR(C19/C7-1,0)", PCT, "compara so julho com julho"),
 ]
 for r, lab, f, fmt, unit in stats:
     ws.cell(row=r, column=2, value=lab).font = BOLD if lab.isupper() else BLACK
@@ -466,12 +466,12 @@ for c in range(2, 6):
     ws.cell(row=76, column=c).fill = BAND
 fo = [
     (77, "Media diaria dos 10 meses estaveis (Jul/25 a Abr/26)", "=AVERAGE(E6:E15)", NUM2, "kWh/dia", "Periodo em que o consumo diario ficou entre 10,0 e 12,3"),
-    (78, "Media diaria dos 3 ultimos meses (Mai a Jul/26)", "=AVERAGE(E16:E18)", NUM2, "kWh/dia", "Periodo apos o degrau"),
+    (78, "Media diaria dos 3 ultimos meses (Mai a Jul/26)", "=AVERAGE(E16:E19)", NUM2, "kWh/dia", "Periodo apos o degrau"),
     (79, "DEGRAU DETECTADO", "=C78-C77", NUM2, "kWh/dia", "Carga nova que apareceu por volta de maio de 2026"),
     (80, "DEGRAU EM BASE MENSAL", "=C79*30.4", NUM0, "kWh/mes", "E este o valor que provavelmente e o carro - ou uma carga nova qualquer"),
     (81, "Aumento percentual", "=IFERROR(C78/C77-1,0)", PCT, "", ""),
-    (82, "CONTROLE DE SAZONALIDADE - Jul/25", "=E6", NUM2, "kWh/dia", "Julho de 2025 tambem foi inverno, com chuveiro eletrico ligado"),
-    (83, "CONTROLE DE SAZONALIDADE - Jul/26", "=E18", NUM2, "kWh/dia", "Mesmo mes, mesma estacao, um ano depois"),
+    (82, "CONTROLE DE SAZONALIDADE - Ago/25", "=E7", NUM2, "kWh/dia", "Julho de 2025 tambem foi inverno, com chuveiro eletrico ligado"),
+    (83, "CONTROLE DE SAZONALIDADE - Ago/25 x Ago/26", "=E19", NUM2, "kWh/dia", "Mesmo mes, mesma estacao, um ano depois"),
     (84, "Diferenca julho contra julho", "=C83-C82", NUM2, "kWh/dia", "ESTE e o numero mais confiavel: compara estacao com estacao"),
     (85, "Diferenca julho contra julho em base mensal", "=C84*30.4", NUM0, "kWh/mes", "Prova que o aumento NAO e sazonal"),
     (86, "Energia da rede por km rodado", "=ENTRADAS!C42/100/ENTRADAS!C45", NUM2, "kWh/km", "Consumo do veiculo dividido pela eficiencia de carregamento"),
